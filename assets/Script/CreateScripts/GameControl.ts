@@ -7,6 +7,7 @@
 
 import EnemyControl from "./EnemyControl";
 import Player from "./Player";
+import PlayerPowerUp from "./PlayerPowerUp";
 
 const { ccclass, property } = cc._decorator;
 
@@ -52,6 +53,8 @@ export default class PlayerControl extends cc.Component {
     @property(cc.AudioSource)
     BGM_: cc.AudioSource = null;
 
+    PowerUp : PlayerPowerUp;
+
     @property
     PlayerHealth = 3;
 
@@ -64,7 +67,7 @@ export default class PlayerControl extends cc.Component {
     @property
     Fire_Rate = 1;
 
-    @property
+    @property 
     MinEnemy = 20;
 
     @property
@@ -98,7 +101,8 @@ export default class PlayerControl extends cc.Component {
 
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
-
+       
+        this.PowerUp = this.node.getComponent(PlayerPowerUp);
         this.GetPos_ = new Array();
         this.LimitMove = this.MainNode.getComponent(cc.Canvas).designResolution.width;
         this.GetCurrentPos_OnScene();
@@ -142,7 +146,7 @@ export default class PlayerControl extends cc.Component {
         if (this.GameRunning == true) {
 
             if (this.Right == true) {
-                if (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - 60) {
+                if (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width)*0.3) {
                     this.Player_Obj.x += this.Speed * dt;
                 }
                 else {
@@ -150,7 +154,7 @@ export default class PlayerControl extends cc.Component {
                 }
             }
             else if (this.Left == true) {
-                if (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + 60) {
+                if (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width)*0.3) {
                     this.Player_Obj.x -= this.Speed * dt;
                 }
                 else {
@@ -176,12 +180,13 @@ export default class PlayerControl extends cc.Component {
                 this.CountTime_SpEnemy = 0;
             }
 
-            this.CountFireEN += dt;
+            this.CountFireEN += dt;           
             if (this.CountFireEN >= this.En_Fire) {
                 var En_FirePos = Math.floor(Math.random() * this.Pos_.childrenCount);
                 this.Pos_.children[En_FirePos].getComponent(EnemyControl).En_Bullect();
                 this.CountFireEN = 0;
             }
+
             this.CountTimePlay+=dt; 
             if(this.CountTimePlay >= 30 && this.En_Fire >= 0.5){
                 this.En_Fire -= 0.1;                
