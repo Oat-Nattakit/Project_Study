@@ -20,6 +20,9 @@ export default class PlayerControl extends cc.Component {
     @property(cc.Label)
     GameOver_text: cc.Label = null;
 
+    @property(cc.Label)
+    ComboHit_Text: cc.Label = null;
+
     @property(cc.Button)
     Start_Btn: cc.Button = null;
 
@@ -53,8 +56,14 @@ export default class PlayerControl extends cc.Component {
     @property(cc.AudioSource)
     BGM_: cc.AudioSource = null;
 
-    PowerUp : PlayerPowerUp;
+    public PowerUp: PlayerPowerUp;    
 
+    @property
+    public Speed = 0;
+
+    @property
+    public Fire_Rate = 1;
+    
     @property
     PlayerHealth = 3;
 
@@ -62,12 +71,6 @@ export default class PlayerControl extends cc.Component {
     PlayerMaxHealth = 0;
 
     @property
-    Speed = 0;
-
-    @property
-    Fire_Rate = 1;
-
-    @property 
     MinEnemy = 20;
 
     @property
@@ -75,8 +78,7 @@ export default class PlayerControl extends cc.Component {
 
     public Health_Pic: cc.Node[];
     public GetPos_: cc.Vec2[];
-    EN_SpawnPos: cc.Vec2[];
-    public HitStack = 0;
+    EN_SpawnPos: cc.Vec2[];    
 
     Right: boolean;
     Left: boolean;
@@ -85,6 +87,7 @@ export default class PlayerControl extends cc.Component {
 
     CountTime = 0;
     scrorePlayer = 0;
+    HitStack = 0;
 
     CountEnemy = 0;
     CountTime_SpEnemy = 0;
@@ -101,7 +104,7 @@ export default class PlayerControl extends cc.Component {
 
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
-       
+
         this.PowerUp = this.node.getComponent(PlayerPowerUp);
         this.GetPos_ = new Array();
         this.LimitMove = this.MainNode.getComponent(cc.Canvas).designResolution.width;
@@ -111,7 +114,7 @@ export default class PlayerControl extends cc.Component {
     GetCurrentPos_OnScene() {
         this.EN_SpawnPos = new Array();
         for (let i = 0; i < this.MaxEnemy; i++) {
-            var PreSp = cc.instantiate(this.Enemy);
+            let PreSp = cc.instantiate(this.Enemy);
             PreSp.parent = this.Pos_;
         }
         setTimeout(function () {
@@ -146,7 +149,7 @@ export default class PlayerControl extends cc.Component {
         if (this.GameRunning == true) {
 
             if (this.Right == true) {
-                if (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width)*0.3) {
+                if (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * 0.3) {
                     this.Player_Obj.x += this.Speed * dt;
                 }
                 else {
@@ -154,7 +157,7 @@ export default class PlayerControl extends cc.Component {
                 }
             }
             else if (this.Left == true) {
-                if (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width)*0.3) {
+                if (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width) * 0.3) {
                     this.Player_Obj.x -= this.Speed * dt;
                 }
                 else {
@@ -180,18 +183,18 @@ export default class PlayerControl extends cc.Component {
                 this.CountTime_SpEnemy = 0;
             }
 
-            this.CountFireEN += dt;           
+            this.CountFireEN += dt;
             if (this.CountFireEN >= this.En_Fire) {
-                var En_FirePos = Math.floor(Math.random() * this.Pos_.childrenCount);
+                let En_FirePos = Math.floor(Math.random() * this.Pos_.childrenCount);
                 this.Pos_.children[En_FirePos].getComponent(EnemyControl).En_Bullect();
                 this.CountFireEN = 0;
             }
 
-            this.CountTimePlay+=dt; 
-            if(this.CountTimePlay >= 30 && this.En_Fire >= 0.5){
-                this.En_Fire -= 0.1;                
+            this.CountTimePlay += dt;
+            if (this.CountTimePlay >= 30 && this.En_Fire >= 0.5) {
+                this.En_Fire -= 0.1;
                 this.CountTimePlay = 0;
-            }                     
+            }
         }
     }
 
@@ -230,13 +233,13 @@ export default class PlayerControl extends cc.Component {
     Spawn_PlayerHealth() {
         this.Health_Pic = new Array();
         for (let i = 0; i < this.PlayerHealth; i++) {
-            var H_P = cc.instantiate(this.Health_)
+            let H_P = cc.instantiate(this.Health_)
             H_P.parent = this.Pos_Health;
         }
     }
 
     Spawn_Bullect() {
-        var Bullect_ = cc.instantiate(this.PrefabsFile);
+        let Bullect_ = cc.instantiate(this.PrefabsFile);
         this.Player_Obj.getComponent(Player).SFX_.play();
         Bullect_.color = cc.Color.GREEN;
         Bullect_.parent = this.MainNode;
@@ -251,30 +254,43 @@ export default class PlayerControl extends cc.Component {
             this.CountEnemy--;
             this.CountTime_SpEnemy = 0;
             this.scrorePlayer += 1;
-            this.HitStack += 1;
+            this.ComBoHitEnemy(true);
             this.PlayerPlusHealth();
             this.label.string = "Score : " + this.scrorePlayer.toString()
         }
+    }
+
+    public ComBoHitEnemy(Hit_Status: boolean) {
+        if (Hit_Status == true) {
+            this.HitStack += 1;    
+            this.ComboHit_Text.node.active = true;
+            this.ComboHit_Text.string = "HIT : "+this.HitStack.toString();      
+        }
+        else {
+            this.ComboHit_Text.node.active = false;
+            this.HitStack = 0;
+        }
+
     }
 
     PlayerPlusHealth() {
         if (this.HitStack % 50 == 0) {
             if (this.PlayerHealth < this.PlayerMaxHealth) {
                 this.PlayerHealth += 1;
-                var H_P = cc.instantiate(this.Health_)
+                let H_P = cc.instantiate(this.Health_)
                 H_P.parent = this.Pos_Health;
             }
         }
     }
 
     RanPositionEn() {
-        var En_Pos = Math.floor(Math.random() * this.EN_SpawnPos.length);
+        let En_Pos = Math.floor(Math.random() * this.EN_SpawnPos.length);
         this.Spawn_Enemy(this.EN_SpawnPos[En_Pos]);
         this.EN_SpawnPos.splice(En_Pos, 1);
     }
 
     Spawn_Enemy(PosSP: cc.Vec2) {
-        var Enemy_ = cc.instantiate(this.Enemy);
+        let Enemy_ = cc.instantiate(this.Enemy);
         Enemy_.parent = this.Pos_;
         Enemy_.setPosition(PosSP);
         this.CountEnemy++;

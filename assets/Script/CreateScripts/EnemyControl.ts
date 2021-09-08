@@ -19,7 +19,7 @@ export default class EnemyControl extends cc.Component {
     GetSc: GameControl;
 
     onLoad() {
-        var manager = cc.director.getCollisionManager();
+        let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
         this.PlayerCon = cc.find("ObjectController");
@@ -35,7 +35,7 @@ export default class EnemyControl extends cc.Component {
     }
 
     public En_Bullect() {
-        var Bullect_ = cc.instantiate(this.GetSc.PrefabsFile);
+        let Bullect_ = cc.instantiate(this.GetSc.PrefabsFile);
         Bullect_.color = cc.Color.RED;
         Bullect_.parent = this.GetSc.MainNode;
         Bullect_.setPosition(this.node.x, this.node.y - 100);

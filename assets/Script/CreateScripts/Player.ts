@@ -27,7 +27,7 @@ export default class NewClass extends cc.Component {
         this.PlayerCon = cc.find("ObjectController");
         this.GetSc = this.PlayerCon.getComponent(GameControl);
 
-        var manager = cc.director.getCollisionManager();
+        let manager = cc.director.getCollisionManager();
         manager.enabled = true;
     }
 
@@ -56,7 +56,7 @@ export default class NewClass extends cc.Component {
         this.GetSc.PlayerHealth--;
         this.HitTime = 0;        
         this.PlayerHit = true;
-        this.GetSc.HitStack = 0;
+        this.GetSc.ComBoHitEnemy(false);
         this.GetSc.Pos_Health.children[this.GetSc.Pos_Health.childrenCount - 1].destroy();
         if (this.GetSc.PlayerHealth <= 0) {
             this.GetSc.GameOver();

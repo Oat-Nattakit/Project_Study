@@ -12,10 +12,7 @@ const { ccclass, property } = cc._decorator;
 export default class PlayerPowerUp extends cc.Component {
 
     @property(cc.Prefab)
-    Speed_Up: cc.Prefab = null;
-
-    @property(cc.Prefab)
-    Increed_Sp: cc.Prefab = null;
+    BuffPrefabs: cc.Prefab = null;    
 
     GetTime = 0;
     GetSc: GameControl;
@@ -24,55 +21,87 @@ export default class PlayerPowerUp extends cc.Component {
     Spawn: boolean = false;
     Curve = 0;
     Swing: boolean = false;
+    Buff_Number = 0;
+    SpeedBuff = 0;
+
 
     onLoad() {
         this.GetSc = this.node.getComponent(GameControl);
     }
 
     SpawnBuff() {
-        var Sp = cc.instantiate(this.Speed_Up);
-        Sp.parent = this.GetSc.MainNode;
-        Sp.setPosition(-(this.GetSc.MainNode.width * 0.5), (this.GetSc.MainNode.width * 0.1));
-        this.GetTime = 0;
-        this.Get = Sp;
+        this.Buff_Number = Math.floor(Math.random() * 2);
+        this.Get = cc.instantiate(this.BuffPrefabs);       
+        this.Get.children[this.Buff_Number].active = true;
+        this.Get.parent = this.GetSc.MainNode;
+        this.RandomPositionBuff();        
+        this.GetTime = 0;        
         this.Spawn = true;
     }
 
+    RandomPositionBuff(){
+        let Ran_Num = Math.floor(Math.random() * 2);
+        if(Ran_Num == 0){
+            this.Get.setPosition(-(this.GetSc.MainNode.width * 0.5), (this.GetSc.MainNode.width * 0.1));     
+            this.SpeedBuff = 150;       
+        }
+        else{
+            this.Get.setPosition((this.GetSc.MainNode.width * 0.5), (this.GetSc.MainNode.width * 0.1));   
+            this.SpeedBuff = -150;          
+        }
+    }
+
     update(dt) {
-
-        if (this.Spawn == false) {
-            this.GetTime += dt;
-            if (this.GetTime >= 10) {
-                this.SpawnBuff();
+        if (this.GetSc.GameRunning == true) {
+            if (this.Spawn == false) {
+                this.GetTime += dt;
+                if (this.GetTime >= 10) {
+                    this.SpawnBuff();
+                }
             }
-        }
 
-        if (this.Spawn == true) {
-            this.Curve += dt;
+            if (this.Spawn == true) {
+                this.Curve += dt;
 
-            if (this.Curve >= 0.5) {
-                if (this.Swing == false) {
-                    this.Swing = true;
+                if (this.Curve >= 0.5) {
+                    this.SwitchDiraction_Y();
+                    this.Curve = 0;
                 }
                 else {
-                    this.Swing = false;
+                    if (this.Swing == false) {
+                        this.Get.y += dt * 100;
+                    }
+                    else {
+                        this.Get.y -= dt * 100;
+                    }
                 }
-                this.Curve = 0;
-            }
-            else {
-                if (this.Swing == false) {
-                    this.Get.y += dt * 100;
-                }
-                else {
-                    this.Get.y -= dt * 100;
-                }
-            }
-            this.Get.x += dt * 150;
-        }
+                this.Get.x += dt * this.SpeedBuff;
 
-        if (this.Get.x >= (this.GetSc.MainNode.width * 0.7)) {
-            this.Get.destroy();
-            this.Spawn = false;
+                if (this.Get.x >= (this.GetSc.MainNode.width * 0.7)) {
+                    this.Get.destroy();
+                    this.Spawn = false;
+                }
+            }
+        }
+    }
+
+    SwitchDiraction_Y() {
+        if (this.Swing == true) {
+            this.Swing = false;
+        }
+        else {
+            this.Swing = true
+        }
+    }
+
+    public BuffPlayerActive() {
+        this.Get.destroy();
+        this.Spawn = false;
+        if (this.Buff_Number == 0) {            
+            this.GetSc.Speed += 100;           
+        }
+        else if (this.Buff_Number == 1) {           
+            this.GetSc.Fire_Rate -= 0.05;           
         }
     }
 }

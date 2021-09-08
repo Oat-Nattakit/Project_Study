@@ -19,7 +19,7 @@ export default class Bullet extends cc.Component {
     GetSc: GameControl;    
 
     onLoad() {
-        var manager = cc.director.getCollisionManager();
+        let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
         this.PlayerCon = cc.find("ObjectController");
@@ -41,6 +41,7 @@ export default class Bullet extends cc.Component {
     }
 
     onCollisionEnter(other, self) {
+       
         if (other.tag == 3) {
             this.SpawnEFX();
             this.node.destroy();
@@ -49,10 +50,15 @@ export default class Bullet extends cc.Component {
             this.SpawnEFX();
             this.node.destroy();
         }
+        if(other.tag == 4){            
+            this.GetSc.PowerUp.BuffPlayerActive();
+            this.SpawnEFX();
+            this.node.destroy();           
+        }
     }
 
     SpawnEFX() {
-        var EFX_ = cc.instantiate(this.GetSc.EFX);
+        let EFX_ = cc.instantiate(this.GetSc.EFX);
         EFX_.setParent(this.GetSc.MainNode);
         EFX_.setPosition(this.node.getPosition());
         setTimeout(function () {
