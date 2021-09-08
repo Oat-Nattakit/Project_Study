@@ -36,8 +36,10 @@ export default class EnemyControl extends cc.Component {
         Bullect_.color = cc.Color.RED;
         Bullect_.parent = this.GetMainScripts.Canvas_Node;
         Bullect_.setPosition(this.node.x, this.node.y - 100);
-        Bullect_.getComponent(Bullet).ObjCol.tag = 3;
-        Bullect_.getComponent(Bullet).typeEn = true;
-        Bullect_.getComponent(Bullet).node.group = 'Enemy';        
+        
+        let ScriptsBullect = Bullect_.getComponent(Bullet);
+        ScriptsBullect.ObjCol.tag = 3;
+        ScriptsBullect.typeEn = true;
+        ScriptsBullect.node.group = 'Enemy';        
     }
 }

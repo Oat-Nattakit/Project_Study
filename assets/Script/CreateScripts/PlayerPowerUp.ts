@@ -12,7 +12,7 @@ const { ccclass, property } = cc._decorator;
 export default class PlayerPowerUp extends cc.Component {
 
     @property(cc.Prefab)
-    private BuffPrefabs: cc.Prefab = null;    
+    private BuffPrefabs: cc.Prefab = null;
 
     private GetTime = 0;
     private GetMainScripts: GameControl;
@@ -22,42 +22,49 @@ export default class PlayerPowerUp extends cc.Component {
     private Spawn_Buff: boolean = false;
     private Obj_Swing: boolean = false;
 
-    private Curve_Time = 0;    
+    private Curve_Time = 0;
     private Buff_Number = 0;
     private SpeedBuff = 150;
 
+    private RangeWidth = 0;
+    private RangeHight = 0;
 
     onLoad() {
         this.GetMainScripts = this.node.getComponent(GameControl);
+
+        this.RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
+        this.RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;
     }
 
     private SpawnBuff() {
         this.Buff_Number = Math.floor(Math.random() * 2);
-        this.Buff_Obj = cc.instantiate(this.BuffPrefabs);       
+        this.Buff_Obj = cc.instantiate(this.BuffPrefabs);
         this.Buff_Obj.children[this.Buff_Number].active = true;
         this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node;
-        this.RandomPositionBuff();        
-        this.GetTime = 0;        
+        this.RandomPositionBuff();
+        this.GetTime = 0;
         this.Spawn_Buff = true;
     }
 
-    private RandomPositionBuff(){
+    private RandomPositionBuff() {
         let Ran_Num = Math.floor(Math.random() * 2);
-        if(Ran_Num == 0){
-            this.Buff_Obj.setPosition(-(this.GetMainScripts.Canvas_Node.width * 0.5), (this.GetMainScripts.Canvas_Node.height * 0.1));                
-            this.SpeedBuff = 150;       
+
+        if (Ran_Num == 0) {
+            this.Buff_Obj.setPosition(-this.RangeWidth, this.RangeHight);
+            this.SpeedBuff = 150;
         }
-        else{
-            this.Buff_Obj.setPosition((this.GetMainScripts.Canvas_Node.width * 0.5), (this.GetMainScripts.Canvas_Node.height * 0.1));   
-            this.SpeedBuff = -150;          
+        else {
+            this.Buff_Obj.setPosition(this.RangeWidth, this.RangeHight);
+            this.SpeedBuff = -150;
         }
     }
 
     update(dt) {
         if (this.GetMainScripts.GameRunning == true) {
+
             if (this.Spawn_Buff == false) {
                 this.GetTime += dt;
-                if (this.GetTime >= (Math.floor(Math.random() * 10)+10)) {
+                if (this.GetTime >= (Math.floor(Math.random() * 10) + 10)) {
                     this.SpawnBuff();
                 }
             }
@@ -77,6 +84,7 @@ export default class PlayerPowerUp extends cc.Component {
                         this.Buff_Obj.y -= dt * 100;
                     }
                 }
+
                 this.Buff_Obj.x += dt * this.SpeedBuff;
 
                 if (this.Buff_Obj.x >= (this.GetMainScripts.Canvas_Node.width * 0.7)) {
@@ -88,6 +96,7 @@ export default class PlayerPowerUp extends cc.Component {
     }
 
     private SwitchDiraction_Y() {
+        
         if (this.Obj_Swing == true) {
             this.Obj_Swing = false;
         }
@@ -97,13 +106,15 @@ export default class PlayerPowerUp extends cc.Component {
     }
 
     public BuffPlayerActive() {
+
         this.Buff_Obj.destroy();
         this.Spawn_Buff = false;
-        if (this.Buff_Number == 0) {            
-            this.GetMainScripts.Speed += 100;           
+
+        if (this.Buff_Number == 0) {
+            this.GetMainScripts.Speed += 100;
         }
-        else if (this.Buff_Number == 1) {           
-            this.GetMainScripts.Fire_Rate -= 0.05;           
+        else if (this.Buff_Number == 1) {
+            this.GetMainScripts.Fire_Rate -= 0.05;
         }
     }
 }

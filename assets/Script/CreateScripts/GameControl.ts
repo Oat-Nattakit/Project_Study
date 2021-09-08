@@ -56,7 +56,7 @@ export default class PlayerControl extends cc.Component {
     @property(cc.AudioSource)
     private BGM_: cc.AudioSource = null;
 
-    public PowerUp: PlayerPowerUp;    
+    public PowerUp: PlayerPowerUp;       
 
     @property
     public Speed = 0;
@@ -95,7 +95,7 @@ export default class PlayerControl extends cc.Component {
     private Rate_SpawnEnemy = 0.6;
 
     private CountFireEN = 0;
-    private En_Fire = 1;
+    private Enamy_FireRate = 1;
     private LimitMove = 0;
     private CountTimePlay = 0;
 
@@ -152,7 +152,8 @@ export default class PlayerControl extends cc.Component {
         if (this.GameRunning == true) {
 
             if (this.Right == true) {
-                if (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * 0.3) {
+                let LimitRight = (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * 0.3)
+                if (LimitRight) {
                     this.Player_Obj.x += this.Speed * dt;
                 }
                 else {
@@ -160,7 +161,8 @@ export default class PlayerControl extends cc.Component {
                 }
             }
             else if (this.Left == true) {
-                if (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width) * 0.3) {
+                let LimitLeft = (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width) * 0.3)
+                if (LimitLeft) {
                     this.Player_Obj.x -= this.Speed * dt;
                 }
                 else {
@@ -177,26 +179,28 @@ export default class PlayerControl extends cc.Component {
             }
 
             this.CountTime_SpEnemy += dt;
+            let Case_EnemyMorethan_20 = (this.CountEnemy >= 20 && this.CountEnemy < this.MaxEnemy && this.CountTime_SpEnemy >= this.Rate_SpawnEnemy);
+
             if (this.CountEnemy < 20) {
                 this.RanPositionEn();
                 this.CountTime_SpEnemy = 0;
-            }
-            else if (this.CountEnemy >= 20 && this.CountEnemy < this.MaxEnemy && this.CountTime_SpEnemy >= this.Rate_SpawnEnemy) {
+            }                      
+            else if (Case_EnemyMorethan_20) {
                 this.RanPositionEn();
                 this.CountTime_SpEnemy = 0;
             }
 
             this.CountFireEN += dt;
-            if (this.CountFireEN >= this.En_Fire) {
+            if (this.CountFireEN >= this.Enamy_FireRate) {
                 let En_FirePos = Math.floor(Math.random() * this.Parent_Pos_Enemy.childrenCount);
                 this.Parent_Pos_Enemy.children[En_FirePos].getComponent(EnemyControl).En_Bullect();
                 this.CountFireEN = 0;
             }
 
-            this.CountTimePlay += dt;
-            if (this.CountTimePlay >= 30 && this.En_Fire >= 0.4) {
-                this.En_Fire -= 0.1;
-                this.CountTimePlay = 0;
+            this.CountTimePlay += dt;            
+            if (this.CountTimePlay >= 30 && this.Enamy_FireRate >= 0.4) {
+                this.Enamy_FireRate -= 0.1;
+                this.CountTimePlay = 0;               
             }
         }
     }
@@ -295,8 +299,9 @@ export default class PlayerControl extends cc.Component {
         Enemy_.parent = this.Parent_Pos_Enemy;
         Enemy_.setPosition(PosSP);
         this.CountEnemy++;
+
         setTimeout(function () {                             
-            this.SetEnemy_IN_Array();
+            this.SetEnemy_IN_Array();            
         }.bind(this), 0.1);        
     }
 
