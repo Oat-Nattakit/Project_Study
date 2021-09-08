@@ -1695,7 +1695,7 @@
       "__id__": 38
     },
     "_enabled": true,
-    "label": {
+    "Score_Text": {
       "__id__": 9
     },
     "GameOver_text": {
@@ -1707,20 +1707,20 @@
     "Start_Btn": {
       "__id__": 41
     },
+    "Parent_Pos_Enemy": {
+      "__id__": 5
+    },
     "Player_Obj": {
       "__id__": 14
     },
-    "Panel_Hining": {
+    "Panel_Hiding": {
       "__id__": 24
     },
-    "MainNode": {
+    "Canvas_Node": {
       "__id__": 2
     },
     "Pos_Health": {
       "__id__": 21
-    },
-    "Pos_": {
-      "__id__": 5
     },
     "Enemy": {
       "__uuid__": "0e95893b-e071-451f-8dd0-c437eaf1ba56"
@@ -1731,16 +1731,16 @@
     "Health_": {
       "__uuid__": "3b24f610-26a6-4fcd-83be-d444f159a51c"
     },
-    "PrefabsFile": {
+    "Prefabs_Bullet": {
       "__uuid__": "273ad28f-3eb3-4a3a-bd1b-7bc86dfce8f2"
     },
     "BGM_": {
       "__id__": 50
     },
-    "PlayerHealth": 3,
-    "PlayerMaxHealth": 5,
     "Speed": 500,
     "Fire_Rate": 0.5,
+    "PlayerHealth": 3,
+    "PlayerMaxHealth": 5,
     "MinEnemy": 20,
     "MaxEnemy": 30,
     "_id": "f29hUh8c9MepLOt3EJQ1Uw"
@@ -2220,10 +2220,7 @@
       "__id__": 38
     },
     "_enabled": true,
-    "Speed_Up": {
-      "__uuid__": "b4da9763-df3b-4c48-ba35-4ec505f3eb1e"
-    },
-    "Increed_Sp": {
+    "BuffPrefabs": {
       "__uuid__": "b4da9763-df3b-4c48-ba35-4ec505f3eb1e"
     },
     "_id": "cagKVQ5RZCwIcrsXOvawsU"

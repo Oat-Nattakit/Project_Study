@@ -15,46 +15,46 @@ const { ccclass, property } = cc._decorator;
 export default class PlayerControl extends cc.Component {
 
     @property(cc.Label)
-    label: cc.Label = null;
+    private Score_Text: cc.Label = null;
 
     @property(cc.Label)
-    GameOver_text: cc.Label = null;
+    private GameOver_text: cc.Label = null;
 
     @property(cc.Label)
-    ComboHit_Text: cc.Label = null;
+    private ComboHit_Text: cc.Label = null;
 
     @property(cc.Button)
-    Start_Btn: cc.Button = null;
+    private Start_Btn: cc.Button = null;    
+    
+    @property(cc.Node)
+    private Parent_Pos_Enemy: cc.Node = null;
+    
+    @property(cc.Node)
+    private Player_Obj: cc.Node = null;
 
     @property(cc.Node)
-    Player_Obj: cc.Node = null;
+    private Panel_Hiding: cc.Node = null;
 
     @property(cc.Node)
-    Panel_Hining: cc.Node = null;
+    public Canvas_Node: cc.Node = null;
 
     @property(cc.Node)
-    MainNode: cc.Node = null;
-
-    @property(cc.Node)
-    Pos_Health: cc.Node = null;
-
-    @property(cc.Node)
-    Pos_: cc.Node = null;
+    public Pos_Health: cc.Node = null;    
 
     @property(cc.Prefab)
-    Enemy: cc.Prefab = null;
+    public Enemy: cc.Prefab = null;
 
     @property(cc.Prefab)
-    EFX: cc.Prefab = null;
+    public EFX: cc.Prefab = null;
 
     @property(cc.Prefab)
-    Health_: cc.Prefab = null;
+    private Health_: cc.Prefab = null;
 
     @property(cc.Prefab)
-    PrefabsFile: cc.Prefab = null;
+    public Prefabs_Bullet: cc.Prefab = null;
 
     @property(cc.AudioSource)
-    BGM_: cc.AudioSource = null;
+    private BGM_: cc.AudioSource = null;
 
     public PowerUp: PlayerPowerUp;    
 
@@ -65,38 +65,39 @@ export default class PlayerControl extends cc.Component {
     public Fire_Rate = 1;
     
     @property
-    PlayerHealth = 3;
+    public PlayerHealth = 3;
 
     @property
-    PlayerMaxHealth = 0;
+    private PlayerMaxHealth = 0;
 
     @property
-    MinEnemy = 20;
+    private MinEnemy = 20;
 
     @property
-    MaxEnemy = 30;
+    private MaxEnemy = 30;
 
     public Health_Pic: cc.Node[];
     public GetPos_: cc.Vec2[];
-    EN_SpawnPos: cc.Vec2[];    
+    public EN_SpawnPos: cc.Vec2[];    
 
-    Right: boolean;
-    Left: boolean;
-    SpawnBullect: boolean;
-    GameRunning: boolean;
+    public GameRunning: boolean;
 
-    CountTime = 0;
-    scrorePlayer = 0;
-    HitStack = 0;
+    private Right: boolean;
+    private Left: boolean;
+    private SpawnBullect: boolean;    
 
-    CountEnemy = 0;
-    CountTime_SpEnemy = 0;
-    Rate_SpawnEnemy = 0.6;
+    private CountTime = 0;
+    private scrorePlayer = 0;
+    private HitStack = 0;
 
-    CountFireEN = 0;
-    En_Fire = 1;
-    LimitMove = 0;
-    CountTimePlay = 0;
+    private CountEnemy = 0;
+    private CountTime_SpEnemy = 0;
+    private Rate_SpawnEnemy = 0.6;
+
+    private CountFireEN = 0;
+    private En_Fire = 1;
+    private LimitMove = 0;
+    private CountTimePlay = 0;
 
     onLoad() {
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
@@ -107,31 +108,33 @@ export default class PlayerControl extends cc.Component {
 
         this.PowerUp = this.node.getComponent(PlayerPowerUp);
         this.GetPos_ = new Array();
-        this.LimitMove = this.MainNode.getComponent(cc.Canvas).designResolution.width;
+        this.LimitMove = this.Canvas_Node.getComponent(cc.Canvas).designResolution.width;
         this.GetCurrentPos_OnScene();
     }
 
-    GetCurrentPos_OnScene() {
+    private GetCurrentPos_OnScene() {
         this.EN_SpawnPos = new Array();
         for (let i = 0; i < this.MaxEnemy; i++) {
             let PreSp = cc.instantiate(this.Enemy);
-            PreSp.parent = this.Pos_;
+            PreSp.parent = this.Parent_Pos_Enemy;
         }
         setTimeout(function () {
             this.ColletPosition();
         }.bind(this), 0.1);
     }
+
     ColletPosition() {
-        for (let i = 0; i < this.Pos_.childrenCount; i++) {
-            this.EN_SpawnPos.push(this.Pos_.children[i].getPosition());
+        for (let i = 0; i < this.Parent_Pos_Enemy.childrenCount; i++) {
+            this.EN_SpawnPos.push(this.Parent_Pos_Enemy.children[i].getPosition());
         }
-        for (let i = 0; i < this.Pos_.childrenCount; i++) {
-            this.Pos_.children[i].destroy();
+        for (let i = 0; i < this.Parent_Pos_Enemy.childrenCount; i++) {
+            this.Parent_Pos_Enemy.children[i].destroy();
         }
-        this.Pos_.getComponent(cc.Layout).type = cc.Layout.Type.NONE;
+        this.Parent_Pos_Enemy.getComponent(cc.Layout).type = cc.Layout.Type.NONE;
         this.SetEnemy_BeforeStart();
     }
-    SetEnemy_BeforeStart() {
+
+    private SetEnemy_BeforeStart() {
         for (let i = 0; i < this.MinEnemy; i++) {
             this.RanPositionEn();
         }
@@ -139,7 +142,7 @@ export default class PlayerControl extends cc.Component {
 
     public startGame() {
         this.GameRunning = true;
-        this.Panel_Hining.active = false;
+        this.Panel_Hiding.active = false;
         this.Start_Btn.node.active = false;
         this.Spawn_PlayerHealth();
         this.BGM_.play();
@@ -185,20 +188,20 @@ export default class PlayerControl extends cc.Component {
 
             this.CountFireEN += dt;
             if (this.CountFireEN >= this.En_Fire) {
-                let En_FirePos = Math.floor(Math.random() * this.Pos_.childrenCount);
-                this.Pos_.children[En_FirePos].getComponent(EnemyControl).En_Bullect();
+                let En_FirePos = Math.floor(Math.random() * this.Parent_Pos_Enemy.childrenCount);
+                this.Parent_Pos_Enemy.children[En_FirePos].getComponent(EnemyControl).En_Bullect();
                 this.CountFireEN = 0;
             }
 
             this.CountTimePlay += dt;
-            if (this.CountTimePlay >= 30 && this.En_Fire >= 0.5) {
+            if (this.CountTimePlay >= 30 && this.En_Fire >= 0.4) {
                 this.En_Fire -= 0.1;
                 this.CountTimePlay = 0;
             }
         }
     }
 
-    onKeyDown(event) {
+    private onKeyDown(event) {
         switch (event.keyCode) {
             case cc.macro.KEY.right:
                 this.Right = true;
@@ -214,7 +217,7 @@ export default class PlayerControl extends cc.Component {
 
         }
     }
-    onKeyUp(event) {
+    private onKeyUp(event) {
         switch (event.keyCode) {
             case cc.macro.KEY.right:
                 this.Right = false;
@@ -230,7 +233,7 @@ export default class PlayerControl extends cc.Component {
         }
     }
 
-    Spawn_PlayerHealth() {
+    private Spawn_PlayerHealth() {
         this.Health_Pic = new Array();
         for (let i = 0; i < this.PlayerHealth; i++) {
             let H_P = cc.instantiate(this.Health_)
@@ -238,17 +241,15 @@ export default class PlayerControl extends cc.Component {
         }
     }
 
-    Spawn_Bullect() {
-        let Bullect_ = cc.instantiate(this.PrefabsFile);
+    private Spawn_Bullect() {
+        let Bullect_ = cc.instantiate(this.Prefabs_Bullet);
         this.Player_Obj.getComponent(Player).SFX_.play();
         Bullect_.color = cc.Color.GREEN;
-        Bullect_.parent = this.MainNode;
-        Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);
-        setTimeout(function () {
-            Bullect_.destroy();
-        }.bind(this), 4000);
-    }
+        Bullect_.parent = this.Canvas_Node;
+        Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);       
+    } 
 
+    
     public CallScore() {
         if (this.GameRunning == true) {
             this.CountEnemy--;
@@ -256,7 +257,7 @@ export default class PlayerControl extends cc.Component {
             this.scrorePlayer += 1;
             this.ComBoHitEnemy(true);
             this.PlayerPlusHealth();
-            this.label.string = "Score : " + this.scrorePlayer.toString()
+            this.Score_Text.string = "Score : " + this.scrorePlayer.toString()
         }
     }
 
@@ -273,7 +274,7 @@ export default class PlayerControl extends cc.Component {
 
     }
 
-    PlayerPlusHealth() {
+    private PlayerPlusHealth() {
         if (this.HitStack % 50 == 0) {
             if (this.PlayerHealth < this.PlayerMaxHealth) {
                 this.PlayerHealth += 1;
@@ -283,24 +284,24 @@ export default class PlayerControl extends cc.Component {
         }
     }
 
-    RanPositionEn() {
+    private RanPositionEn() {
         let En_Pos = Math.floor(Math.random() * this.EN_SpawnPos.length);
         this.Spawn_Enemy(this.EN_SpawnPos[En_Pos]);
         this.EN_SpawnPos.splice(En_Pos, 1);
     }
 
-    Spawn_Enemy(PosSP: cc.Vec2) {
+    private Spawn_Enemy(PosSP: cc.Vec2) {
         let Enemy_ = cc.instantiate(this.Enemy);
-        Enemy_.parent = this.Pos_;
+        Enemy_.parent = this.Parent_Pos_Enemy;
         Enemy_.setPosition(PosSP);
         this.CountEnemy++;
-        this.SetEnemy_IN_Array();
+        setTimeout(function () {                             
+            this.SetEnemy_IN_Array();
+        }.bind(this), 0.1);        
     }
 
-    SetEnemy_IN_Array() {
-        setTimeout(function () {
-            this.GetPos_.push(this.Pos_.children[this.Pos_.childrenCount - 1].getPosition())
-        }.bind(this), 0.1);
+    SetEnemy_IN_Array() {             
+        this.GetPos_.push(this.Parent_Pos_Enemy.children[this.Parent_Pos_Enemy.childrenCount - 1].getPosition())
     }
 
     public GameOver() {

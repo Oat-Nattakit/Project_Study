@@ -10,40 +10,34 @@ import GameControl from "./GameControl";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class EnemyControl extends cc.Component {
+export default class EnemyControl extends cc.Component {   
 
-    @property(cc.BoxCollider)
-    Box: cc.BoxCollider = null;
-
-    PlayerCon: cc.Node;
-    GetSc: GameControl;
+    private PlayerCon: cc.Node;
+    private GetMainScripts: GameControl;
 
     onLoad() {
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
         this.PlayerCon = cc.find("ObjectController");
-        this.GetSc = this.PlayerCon.getComponent(GameControl);
+        this.GetMainScripts = this.PlayerCon.getComponent(GameControl);
     }    
 
     onCollisionEnter(other, self) {
         if (other.tag == 2) {
-            this.GetSc.EN_SpawnPos.push(this.node.getPosition());
+            this.GetMainScripts.EN_SpawnPos.push(this.node.getPosition());
             this.node.destroy();
-            this.GetSc.CallScore();
+            this.GetMainScripts.CallScore();
         }
     }
 
     public En_Bullect() {
-        let Bullect_ = cc.instantiate(this.GetSc.PrefabsFile);
+        let Bullect_ = cc.instantiate(this.GetMainScripts.Prefabs_Bullet);
         Bullect_.color = cc.Color.RED;
-        Bullect_.parent = this.GetSc.MainNode;
+        Bullect_.parent = this.GetMainScripts.Canvas_Node;
         Bullect_.setPosition(this.node.x, this.node.y - 100);
         Bullect_.getComponent(Bullet).ObjCol.tag = 3;
         Bullect_.getComponent(Bullet).typeEn = true;
-        Bullect_.getComponent(Bullet).node.group = 'Enemy';
-        setTimeout(function () {
-            Bullect_.destroy();
-        }.bind(this), 4000);
+        Bullect_.getComponent(Bullet).node.group = 'Enemy';        
     }
 }

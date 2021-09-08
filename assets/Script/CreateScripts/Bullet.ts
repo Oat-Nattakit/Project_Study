@@ -13,17 +13,17 @@ const { ccclass, property } = cc._decorator;
 export default class Bullet extends cc.Component {
 
     @property
-    Speed_Bul = 100;
+    private Speed_Bul = 100;
 
-    PlayerCon: cc.Node;
-    GetSc: GameControl;    
+    private PlayerCon: cc.Node;
+    private GetMainScripts: GameControl;    
 
     onLoad() {
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
         this.PlayerCon = cc.find("ObjectController");
-        this.GetSc = this.PlayerCon.getComponent(GameControl);
+        this.GetMainScripts = this.PlayerCon.getComponent(GameControl);
     }
 
     @property(cc.Collider)
@@ -38,6 +38,10 @@ export default class Bullet extends cc.Component {
         else {
             this.node.y -= this.Speed_Bul * (dt * 10);
         }
+
+        if(Math.abs(this.node.y) >= this.GetMainScripts.Canvas_Node.height * 0.6){                    
+            this.node.destroy();
+        }
     }
 
     onCollisionEnter(other, self) {
@@ -51,15 +55,15 @@ export default class Bullet extends cc.Component {
             this.node.destroy();
         }
         if(other.tag == 4){            
-            this.GetSc.PowerUp.BuffPlayerActive();
+            this.GetMainScripts.PowerUp.BuffPlayerActive();
             this.SpawnEFX();
             this.node.destroy();           
         }
     }
 
-    SpawnEFX() {
-        let EFX_ = cc.instantiate(this.GetSc.EFX);
-        EFX_.setParent(this.GetSc.MainNode);
+    private SpawnEFX() {
+        let EFX_ = cc.instantiate(this.GetMainScripts.EFX);
+        EFX_.setParent(this.GetMainScripts.Canvas_Node);
         EFX_.setPosition(this.node.getPosition());
         setTimeout(function () {
             EFX_.destroy()
