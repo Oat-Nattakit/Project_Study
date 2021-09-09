@@ -16,7 +16,7 @@ export default class NewClass extends cc.Component {
     public SFX_: cc.AudioSource = null;
 
     private PlayerCon: cc.Node;
-    private GetMainScripts: GameControl;    
+    private GetMainScripts: GameControl;
 
     private HitTime = 0;
 
@@ -28,7 +28,7 @@ export default class NewClass extends cc.Component {
         this.GetMainScripts = this.PlayerCon.getComponent(GameControl);
 
         let manager = cc.director.getCollisionManager();
-        manager.enabled = true;
+        manager.enabled = true;        
     }
 
     public CountHit = 0;
@@ -54,12 +54,12 @@ export default class NewClass extends cc.Component {
 
     private Cal_PlayerHealt() {
         this.GetMainScripts.PlayerHealth--;
-        this.HitTime = 0;        
-        this.PlayerHit = true;
+        this.HitTime = 0;
+        this.PlayerHit = true;        
         this.GetMainScripts.ComBoHitEnemy(false);
         this.GetMainScripts.Pos_Health.children[this.GetMainScripts.Pos_Health.childrenCount - 1].destroy();
         if (this.GetMainScripts.PlayerHealth <= 0) {
             this.GetMainScripts.GameOver();
         }
-    }
+    }    
 }

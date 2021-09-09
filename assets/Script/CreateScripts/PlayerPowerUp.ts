@@ -40,6 +40,7 @@ export default class PlayerPowerUp extends cc.Component {
         this.Buff_Number = Math.floor(Math.random() * 2);
         this.Buff_Obj = cc.instantiate(this.BuffPrefabs);
         this.Buff_Obj.children[this.Buff_Number].active = true;
+        this.BuffScale_(this.Buff_Obj);
         this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node;
         this.RandomPositionBuff();
         this.GetTime = 0;
@@ -96,7 +97,7 @@ export default class PlayerPowerUp extends cc.Component {
     }
 
     private SwitchDiraction_Y() {
-        
+
         if (this.Obj_Swing == true) {
             this.Obj_Swing = false;
         }
@@ -116,5 +117,11 @@ export default class PlayerPowerUp extends cc.Component {
         else if (this.Buff_Number == 1) {
             this.GetMainScripts.Fire_Rate -= 0.05;
         }
+    }
+
+    BuffScale_(NodeScale: cc.Node) {
+        
+        let Scale_resize = cc.sequence(cc.scaleTo(0.4, 1.3, 1.3), cc.scaleTo(0.4, 0.8, 0.8)).repeatForever()
+        NodeScale.runAction(Scale_resize);
     }
 }

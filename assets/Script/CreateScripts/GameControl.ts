@@ -141,9 +141,9 @@ export default class PlayerControl extends cc.Component {
         this.GameRunning = true;
         this.Panel_Hiding.active = false;
         this.Start_Btn.node.active = false;
-        this.Spawn_PlayerHealth();
+        this.Spawn_PlayerHealth();        
         this.BGM_.play();
-    }
+    }    
 
     update(dt) {
         if (this.GameRunning == true) {
