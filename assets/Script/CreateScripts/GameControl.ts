@@ -24,7 +24,10 @@ export default class PlayerControl extends cc.Component {
     private ComboHit_Text: cc.Label = null;
 
     @property(cc.Button)
-    private Start_Btn: cc.Button = null;    
+    private Start_Btn: cc.Button = null; 
+    
+    @property(cc.Button)
+    private Play_Again_Btn: cc.Button = null;  
     
     @property(cc.Node)
     private Parent_Pos_Enemy: cc.Node = null;
@@ -107,6 +110,9 @@ export default class PlayerControl extends cc.Component {
         this.GetPos_ = new Array();
         this.LimitMove = this.Canvas_Node.getComponent(cc.Canvas).designResolution.width;
         this.GetCurrentPos_OnScene();
+
+        this.Start_Btn.node.on('click', this.startGame, this);
+        this.Play_Again_Btn.node.on('click', this.PlayGameAgain, this);
     }
 
     private GetCurrentPos_OnScene() {
