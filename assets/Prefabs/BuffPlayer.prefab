@@ -91,7 +91,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Speed",
+    "_name": "Health",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -175,7 +175,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "78981946-cc63-4fc5-a48f-26cd9901dc70"
+      "__uuid__": "34d3c9cd-ce19-4bbf-81cd-6c19d9239108"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -258,7 +258,7 @@
     "asset": {
       "__uuid__": "b4da9763-df3b-4c48-ba35-4ec505f3eb1e"
     },
-    "fileId": "706NcS9PdGdpLnzT6G5Kck",
+    "fileId": "edjFtYKg9AP7KhOB3bKOwE",
     "sync": false
   },
   {
@@ -435,7 +435,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Health",
+    "_name": "Speed",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -519,7 +519,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "34d3c9cd-ce19-4bbf-81cd-6c19d9239108"
+      "__uuid__": "78981946-cc63-4fc5-a48f-26cd9901dc70"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -602,7 +602,7 @@
     "asset": {
       "__uuid__": "b4da9763-df3b-4c48-ba35-4ec505f3eb1e"
     },
-    "fileId": "edjFtYKg9AP7KhOB3bKOwE",
+    "fileId": "706NcS9PdGdpLnzT6G5Kck",
     "sync": false
   },
   {

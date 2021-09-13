@@ -14,14 +14,14 @@ export default class PlayerPowerUp extends cc.Component {
     @property(cc.Prefab)
     private BuffPrefabs: cc.Prefab = null;
 
-    private GetTime = 0;
     private GetMainScripts: GameControl;
-
     private Buff_Obj: cc.Node;
 
     private Spawn_Buff: boolean = false;
 
     private Curve_Time = 0.5;
+    private GetTime = 0;
+
     private Buff_Number = 0;
     private SpeedBuff = 150;
 
@@ -32,11 +32,11 @@ export default class PlayerPowerUp extends cc.Component {
     private CountRate = 0;
 
     onLoad() {
-        
-        this.GetMainScripts = this.node.getComponent(GameControl);
 
+        this.GetMainScripts = GameControl.Instance;
         this.RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
         this.RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;
+
 
         for (let i = 0; i < this.Random_Rate.length; i++) {
             this.CountRate += this.Random_Rate[i];
@@ -45,10 +45,10 @@ export default class PlayerPowerUp extends cc.Component {
 
     private SpawnBuff() {
 
-        this.RandomBuffPlayer();        
+        this.RandomBuffPlayer();
         this.Buff_Obj = cc.instantiate(this.BuffPrefabs);
         this.Buff_Obj.children[this.Buff_Number].active = true;
-        this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node; 
+        this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node;
 
         this.BuffObject_Movement();
         this.RandomPositionBuff();
@@ -67,7 +67,7 @@ export default class PlayerPowerUp extends cc.Component {
         else if (Random_Value > this.Random_Rate[0] && Random_Value <= this.Random_Rate[1]) {
             this.Buff_Number = 1;
         }
-        else if (Random_Value > this.Random_Rate[1] && Random_Value <= this.Random_Rate[2]) {
+        else if (Random_Value >= this.Random_Rate[1]) {
             this.Buff_Number = 2;
         }
     }
@@ -115,13 +115,13 @@ export default class PlayerPowerUp extends cc.Component {
         this.Spawn_Buff = false;
 
         if (this.Buff_Number == 0) {
-            this.GetMainScripts.Speed += 100;
+            this.GetMainScripts.PlayerPlusHealth();
         }
         else if (this.Buff_Number == 1) {
             this.GetMainScripts.Fire_Rate -= 0.05;
         }
         else if (this.Buff_Number == 2) {
-            this.GetMainScripts.PlayerPlusHealth();
+            this.GetMainScripts.Speed += 100;
         }
     }
 

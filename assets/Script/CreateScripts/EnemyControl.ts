@@ -12,25 +12,22 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class EnemyControl extends cc.Component {
 
-    private PlayerCon: cc.Node;
     private GetMainScripts: GameControl;
 
     onLoad() {
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
-
-        this.PlayerCon = cc.find("ObjectController");
-        this.GetMainScripts = this.PlayerCon.getComponent(GameControl);
+        this.GetMainScripts = GameControl.Instance;
     }
 
     onCollisionEnter(other, self) {
         if (other.tag == 2) {
             //this.GetMainScripts.EN_SpawnPos.push(this.node.getPosition());      
-            this.GetMainScripts.GetPosition_StandbyPush(this.node.getPosition());         
+            this.GetMainScripts.GetPosition_StandbyPush(this.node.getPosition());
             this.node.destroy();
-            this.GetMainScripts.CallScore();                    
+            this.GetMainScripts.CallScore();
         }
-    }  
+    }
 
     public En_Bullect() {
         let Bullect_ = cc.instantiate(this.GetMainScripts.Prefabs_Bullet);

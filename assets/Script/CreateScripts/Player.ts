@@ -10,7 +10,7 @@ import GameControl from "./GameControl";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class NewClass extends cc.Component {
+export default class Player extends cc.Component {
 
     @property(cc.AudioSource)
     public SFX_: cc.AudioSource = null;
@@ -22,16 +22,16 @@ export default class NewClass extends cc.Component {
 
     private PlayerHit: boolean = false;
 
+    public CountHit = 0;
+
     onLoad() {
-
-        this.PlayerCon = cc.find("ObjectController");
-        this.GetMainScripts = this.PlayerCon.getComponent(GameControl);
-
         let manager = cc.director.getCollisionManager();
-        manager.enabled = true;        
+        manager.enabled = true;
     }
 
-    public CountHit = 0;
+    start() {
+        this.GetMainScripts = GameControl.Instance;
+    }
 
     update(dt) {
 
@@ -55,11 +55,11 @@ export default class NewClass extends cc.Component {
     private Cal_PlayerHealt() {
         this.GetMainScripts.PlayerHealth--;
         this.HitTime = 0;
-        this.PlayerHit = true;        
+        this.PlayerHit = true;
         this.GetMainScripts.ComBoHitEnemy(false);
         this.GetMainScripts.Pos_Health.children[this.GetMainScripts.Pos_Health.childrenCount - 1].destroy();
         if (this.GetMainScripts.PlayerHealth <= 0) {
             this.GetMainScripts.GameOver();
         }
-    }    
+    }
 }

@@ -12,7 +12,9 @@ import PlayerPowerUp from "./PlayerPowerUp";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class PlayerControl extends cc.Component {
+export default class GameControl extends cc.Component {
+
+    static Instance: GameControl = null;
 
     @property(cc.Label)
     private Score_Text: cc.Label = null;
@@ -60,6 +62,7 @@ export default class PlayerControl extends cc.Component {
     private BGM_: cc.AudioSource = null;
 
     public PowerUp: PlayerPowerUp;
+    private DefVal : defult_Value;
 
     @property
     public Speed = 0;
@@ -103,6 +106,9 @@ export default class PlayerControl extends cc.Component {
     private CountTimePlay = 0;
 
     onLoad() {
+
+        GameControl.Instance = this;
+        this.DefVal = new defult_Value(this.Speed,this.Fire_Rate);
 
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
@@ -291,6 +297,8 @@ export default class PlayerControl extends cc.Component {
         else {
             this.ComboHit_Text.node.active = false;
             this.HitStack = 0;
+            this.Speed = this.DefVal.St_Speed;
+            this.Fire_Rate = this.DefVal.St_FirRate;
         }
     }
 
@@ -349,3 +357,15 @@ export default class PlayerControl extends cc.Component {
         cc.director.loadScene("ObjMovement");
     }
 }
+
+class defult_Value{
+
+    public St_Speed = 0;
+    public St_FirRate = 0;
+
+    constructor(SetSpeed,SetFireRate){
+        this.St_Speed = SetSpeed;
+        this.St_FirRate = SetFireRate;
+    }
+}
+

@@ -14,6 +14,11 @@ export default class Bullet extends cc.Component {
 
     @property
     private Speed_Bul = 100;
+    
+    @property(cc.Collider)
+    ObjCol: cc.Collider = null;
+
+    public typeEn: boolean = false;
 
     private PlayerCon: cc.Node;
     private GetMainScripts: GameControl;    
@@ -22,14 +27,8 @@ export default class Bullet extends cc.Component {
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
-        this.PlayerCon = cc.find("ObjectController");
-        this.GetMainScripts = this.PlayerCon.getComponent(GameControl);
-    }
-
-    @property(cc.Collider)
-    ObjCol: cc.Collider = null;
-
-    public typeEn: boolean = false;
+        this.GetMainScripts = GameControl.Instance;        
+    }      
 
     update(dt) {
         if (this.typeEn == false) {
