@@ -279,12 +279,12 @@ export default class GameControl extends cc.Component {
             this.CountEnemy--;
             this.CountTime_SpEnemy = 0;
             this.scrorePlayer += 1;
-            this.ComBoHitEnemy(true);
+            this.Hit_and_GetHit_Ststus(true);
             this.Score_Text.string = "Score : " + this.scrorePlayer.toString()
         }
     }
 
-    public ComBoHitEnemy(Hit_Status: boolean) {
+    public Hit_and_GetHit_Ststus(Hit_Status: boolean) {
 
         if (Hit_Status == true) {
             this.HitStack += 1;
@@ -295,10 +295,15 @@ export default class GameControl extends cc.Component {
             }
         }
         else {
+            this.PlayerHealth--;
             this.ComboHit_Text.node.active = false;
             this.HitStack = 0;
             this.Speed = this.DefVal.St_Speed;
             this.Fire_Rate = this.DefVal.St_FirRate;
+            this.Pos_Health.children[this.Pos_Health.childrenCount - 1].destroy();
+            if(this.PlayerHealth <= 0){
+                this.GameOver();
+            }
         }
     }
 

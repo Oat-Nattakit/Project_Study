@@ -48,18 +48,13 @@ export default class Player extends cc.Component {
 
     onCollisionEnter(other, self) {
         if (other.tag == 3) {
-            this.Cal_PlayerHealt();
+            this.PlayerHealt_Hit();
         }
     }
 
-    private Cal_PlayerHealt() {
-        this.GetMainScripts.PlayerHealth--;
+    private PlayerHealt_Hit() {        
         this.HitTime = 0;
         this.PlayerHit = true;
-        this.GetMainScripts.ComBoHitEnemy(false);
-        this.GetMainScripts.Pos_Health.children[this.GetMainScripts.Pos_Health.childrenCount - 1].destroy();
-        if (this.GetMainScripts.PlayerHealth <= 0) {
-            this.GetMainScripts.GameOver();
-        }
+        this.GetMainScripts.Hit_and_GetHit_Ststus(false);        
     }
 }
