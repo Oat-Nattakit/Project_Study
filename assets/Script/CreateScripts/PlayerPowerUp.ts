@@ -32,6 +32,7 @@ export default class PlayerPowerUp extends cc.Component {
     private CountRate = 0;
 
     onLoad() {
+        
         this.GetMainScripts = this.node.getComponent(GameControl);
 
         this.RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
@@ -44,19 +45,20 @@ export default class PlayerPowerUp extends cc.Component {
 
     private SpawnBuff() {
 
-        this.RandomBuffPlayer();
+        this.RandomBuffPlayer();        
         this.Buff_Obj = cc.instantiate(this.BuffPrefabs);
         this.Buff_Obj.children[this.Buff_Number].active = true;
+        this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node; 
 
-        this.BuffObject_Movement(this.Buff_Obj);
-        this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node;
-
+        this.BuffObject_Movement();
         this.RandomPositionBuff();
+
         this.GetTime = 0;
         this.Spawn_Buff = true;
     }
 
     private RandomBuffPlayer() {
+
         let Random_Value = Math.floor(Math.random() * this.CountRate);
 
         if (Random_Value <= this.Random_Rate[0]) {
@@ -71,6 +73,7 @@ export default class PlayerPowerUp extends cc.Component {
     }
 
     private RandomPositionBuff() {
+
         let Ran_Num = Math.floor(Math.random() * 2);
 
         if (Ran_Num == 0) {
@@ -84,6 +87,7 @@ export default class PlayerPowerUp extends cc.Component {
     }
 
     update(dt) {
+
         if (this.GetMainScripts.GameRunning == true) {
 
             if (this.Spawn_Buff == false) {
@@ -121,13 +125,14 @@ export default class PlayerPowerUp extends cc.Component {
         }
     }
 
-    BuffObject_Movement(NodeScale: cc.Node) {
+    BuffObject_Movement() {
 
         let Scale_resize = cc.sequence(cc.scaleTo(0.4, 1.3, 1.3), cc.scaleTo(0.4, 0.8, 0.8)).repeatForever();
-        NodeScale.runAction(Scale_resize);
+        this.Buff_Obj.runAction(Scale_resize);
 
         let SwingUp = cc.moveBy(this.Curve_Time, this.Buff_Obj.x, this.Buff_Obj.y + 50)
         let SwingDown = cc.moveBy(this.Curve_Time, this.Buff_Obj.x, this.Buff_Obj.y - 50)
+
         let BuffSwing_Move = cc.sequence(SwingUp, SwingDown).repeatForever();
         this.Buff_Obj.runAction(BuffSwing_Move);
     }

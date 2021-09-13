@@ -103,6 +103,7 @@ export default class PlayerControl extends cc.Component {
     private CountTimePlay = 0;
 
     onLoad() {
+
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
@@ -116,6 +117,7 @@ export default class PlayerControl extends cc.Component {
     }
 
     private GetCurrentPos_OnScene() {
+
         this.EN_SpawnPos = new Array();
         for (let i = 0; i < this.MaxEnemy; i++) {
             let PreSp = cc.instantiate(this.Enemy);
@@ -127,6 +129,7 @@ export default class PlayerControl extends cc.Component {
     }
 
     ColletPosition() {
+
         for (let i = 0; i < this.Parent_Pos_Enemy.childrenCount; i++) {
             this.EN_SpawnPos.push(this.Parent_Pos_Enemy.children[i].getPosition());
         }
@@ -138,12 +141,14 @@ export default class PlayerControl extends cc.Component {
     }
 
     private SetEnemy_BeforeStart() {
+
         for (let i = 0; i < this.MinEnemy; i++) {
             this.RanPositionEn();
         }
     }
 
     public startGame() {
+
         this.GameRunning = true;
         this.Panel_Hiding.active = false;
         this.Start_Btn.node.active = false;
@@ -152,6 +157,7 @@ export default class PlayerControl extends cc.Component {
     }
 
     update(dt) {
+
         if (this.GameRunning == true) {
 
             if (this.Right == true) {
@@ -209,6 +215,7 @@ export default class PlayerControl extends cc.Component {
     }
 
     private onKeyDown(event) {
+
         switch (event.keyCode) {
             case cc.macro.KEY.right:
                 this.Right = true;
@@ -225,6 +232,7 @@ export default class PlayerControl extends cc.Component {
         }
     }
     private onKeyUp(event) {
+
         switch (event.keyCode) {
             case cc.macro.KEY.right:
                 this.Right = false;
@@ -241,6 +249,7 @@ export default class PlayerControl extends cc.Component {
     }
 
     private Spawn_PlayerHealth() {
+
         this.Health_Pic = new Array();
         for (let i = 0; i < this.PlayerHealth; i++) {
             let H_P = cc.instantiate(this.Health_)
@@ -249,6 +258,7 @@ export default class PlayerControl extends cc.Component {
     }
 
     private Spawn_Bullect() {
+
         let Bullect_ = cc.instantiate(this.Prefabs_Bullet);
         this.Player_Obj.getComponent(Player).SFX_.play();
         Bullect_.color = cc.Color.GREEN;
@@ -258,17 +268,18 @@ export default class PlayerControl extends cc.Component {
 
 
     public CallScore() {
+
         if (this.GameRunning == true) {
             this.CountEnemy--;
             this.CountTime_SpEnemy = 0;
             this.scrorePlayer += 1;
             this.ComBoHitEnemy(true);
-            //this.PlayerPlusHealth();
             this.Score_Text.string = "Score : " + this.scrorePlayer.toString()
         }
     }
 
     public ComBoHitEnemy(Hit_Status: boolean) {
+
         if (Hit_Status == true) {
             this.HitStack += 1;
             this.ComboHit_Text.node.active = true;
@@ -281,10 +292,10 @@ export default class PlayerControl extends cc.Component {
             this.ComboHit_Text.node.active = false;
             this.HitStack = 0;
         }
-
     }
 
     public PlayerPlusHealth() {
+
         if (this.PlayerHealth < this.PlayerMaxHealth) {
             this.PlayerHealth += 1;
             let H_P = cc.instantiate(this.Health_)
@@ -293,21 +304,28 @@ export default class PlayerControl extends cc.Component {
     }
 
     public GetPosition_StandbyPush(PositionNode: cc.Vec2) {
+
         setTimeout(function () {
             this.EN_SpawnPos.push(PositionNode);
         }.bind(this), 10);
     }
 
     private RanPositionEn() {
+
         let En_Pos = Math.floor(Math.random() * this.EN_SpawnPos.length);
         this.Spawn_Enemy(this.EN_SpawnPos[En_Pos]);
         this.EN_SpawnPos.splice(En_Pos, 1);
     }
 
     private Spawn_Enemy(PosSP: cc.Vec2) {
+
         let Enemy_ = cc.instantiate(this.Enemy);
         Enemy_.parent = this.Parent_Pos_Enemy;
         Enemy_.setPosition(PosSP);
+
+        let EnemyScaleUp = cc.scaleTo(0.5, 1, 1);
+        Enemy_.runAction(EnemyScaleUp);
+
         this.CountEnemy++;
 
         setTimeout(function () {
@@ -316,10 +334,12 @@ export default class PlayerControl extends cc.Component {
     }
 
     SetEnemy_IN_Array() {
+
         this.GetPos_.push(this.Parent_Pos_Enemy.children[this.Parent_Pos_Enemy.childrenCount - 1].getPosition())
     }
 
     public GameOver() {
+
         this.GameRunning = false;
         this.BGM_.stop();
         this.GameOver_text.node.active = true;
