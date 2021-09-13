@@ -24,14 +24,14 @@ export default class PlayerControl extends cc.Component {
     private ComboHit_Text: cc.Label = null;
 
     @property(cc.Button)
-    private Start_Btn: cc.Button = null; 
-    
+    private Start_Btn: cc.Button = null;
+
     @property(cc.Button)
-    private Play_Again_Btn: cc.Button = null;  
-    
+    private Play_Again_Btn: cc.Button = null;
+
     @property(cc.Node)
     private Parent_Pos_Enemy: cc.Node = null;
-    
+
     @property(cc.Node)
     private Player_Obj: cc.Node = null;
 
@@ -42,7 +42,7 @@ export default class PlayerControl extends cc.Component {
     public Canvas_Node: cc.Node = null;
 
     @property(cc.Node)
-    public Pos_Health: cc.Node = null;    
+    public Pos_Health: cc.Node = null;
 
     @property(cc.Prefab)
     public Enemy: cc.Prefab = null;
@@ -59,14 +59,14 @@ export default class PlayerControl extends cc.Component {
     @property(cc.AudioSource)
     private BGM_: cc.AudioSource = null;
 
-    public PowerUp: PlayerPowerUp;       
+    public PowerUp: PlayerPowerUp;
 
     @property
     public Speed = 0;
 
     @property
     public Fire_Rate = 1;
-    
+
     @property
     public PlayerHealth = 3;
 
@@ -81,13 +81,13 @@ export default class PlayerControl extends cc.Component {
 
     public Health_Pic: cc.Node[];
     public GetPos_: cc.Vec2[];
-    public EN_SpawnPos: cc.Vec2[];    
+    public EN_SpawnPos: cc.Vec2[];
 
     public GameRunning: boolean;
 
     private Right: boolean;
     private Left: boolean;
-    private SpawnBullect: boolean;    
+    private SpawnBullect: boolean;
 
     private CountTime = 0;
     private scrorePlayer = 0;
@@ -104,7 +104,7 @@ export default class PlayerControl extends cc.Component {
 
     onLoad() {
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);       
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
         this.PowerUp = this.node.getComponent(PlayerPowerUp);
         this.GetPos_ = new Array();
@@ -147,9 +147,9 @@ export default class PlayerControl extends cc.Component {
         this.GameRunning = true;
         this.Panel_Hiding.active = false;
         this.Start_Btn.node.active = false;
-        this.Spawn_PlayerHealth();        
+        this.Spawn_PlayerHealth();
         this.BGM_.play();
-    }    
+    }
 
     update(dt) {
         if (this.GameRunning == true) {
@@ -187,7 +187,7 @@ export default class PlayerControl extends cc.Component {
             if (this.CountEnemy < 20) {
                 this.RanPositionEn();
                 this.CountTime_SpEnemy = 0;
-            }                      
+            }
             else if (Case_EnemyMorethan_20) {
                 this.RanPositionEn();
                 this.CountTime_SpEnemy = 0;
@@ -200,10 +200,10 @@ export default class PlayerControl extends cc.Component {
                 this.CountFireEN = 0;
             }
 
-            this.CountTimePlay += dt;            
+            this.CountTimePlay += dt;
             if (this.CountTimePlay >= 30 && this.Enamy_FireRate >= 0.4) {
                 this.Enamy_FireRate -= 0.1;
-                this.CountTimePlay = 0;               
+                this.CountTimePlay = 0;
             }
         }
     }
@@ -253,26 +253,29 @@ export default class PlayerControl extends cc.Component {
         this.Player_Obj.getComponent(Player).SFX_.play();
         Bullect_.color = cc.Color.GREEN;
         Bullect_.parent = this.Canvas_Node;
-        Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);       
-    } 
+        Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);
+    }
 
-    
+
     public CallScore() {
         if (this.GameRunning == true) {
             this.CountEnemy--;
             this.CountTime_SpEnemy = 0;
             this.scrorePlayer += 1;
             this.ComBoHitEnemy(true);
-            this.PlayerPlusHealth();
+            //this.PlayerPlusHealth();
             this.Score_Text.string = "Score : " + this.scrorePlayer.toString()
         }
     }
 
     public ComBoHitEnemy(Hit_Status: boolean) {
         if (Hit_Status == true) {
-            this.HitStack += 1;    
+            this.HitStack += 1;
             this.ComboHit_Text.node.active = true;
-            this.ComboHit_Text.string = "HIT : "+this.HitStack.toString();      
+            this.ComboHit_Text.string = "HIT : " + this.HitStack.toString();
+            if (this.HitStack % 50 == 0) {
+                this.PlayerPlusHealth();
+            }
         }
         else {
             this.ComboHit_Text.node.active = false;
@@ -281,14 +284,18 @@ export default class PlayerControl extends cc.Component {
 
     }
 
-    private PlayerPlusHealth() {
-        if (this.HitStack % 50 == 0) {
-            if (this.PlayerHealth < this.PlayerMaxHealth) {
-                this.PlayerHealth += 1;
-                let H_P = cc.instantiate(this.Health_)
-                H_P.parent = this.Pos_Health;
-            }
+    public PlayerPlusHealth() {
+        if (this.PlayerHealth < this.PlayerMaxHealth) {
+            this.PlayerHealth += 1;
+            let H_P = cc.instantiate(this.Health_)
+            H_P.parent = this.Pos_Health;
         }
+    }
+
+    public GetPosition_StandbyPush(PositionNode: cc.Vec2) {
+        setTimeout(function () {
+            this.EN_SpawnPos.push(PositionNode);
+        }.bind(this), 10);
     }
 
     private RanPositionEn() {
@@ -303,12 +310,12 @@ export default class PlayerControl extends cc.Component {
         Enemy_.setPosition(PosSP);
         this.CountEnemy++;
 
-        setTimeout(function () {                             
-            this.SetEnemy_IN_Array();            
-        }.bind(this), 0.1);        
+        setTimeout(function () {
+            this.SetEnemy_IN_Array();
+        }.bind(this), 0.1);
     }
 
-    SetEnemy_IN_Array() {             
+    SetEnemy_IN_Array() {
         this.GetPos_.push(this.Parent_Pos_Enemy.children[this.Parent_Pos_Enemy.childrenCount - 1].getPosition())
     }
 

@@ -20,31 +20,54 @@ export default class PlayerPowerUp extends cc.Component {
     private Buff_Obj: cc.Node;
 
     private Spawn_Buff: boolean = false;
-    private Obj_Swing: boolean = false;
 
-    private Curve_Time = 0;
+    private Curve_Time = 0.5;
     private Buff_Number = 0;
     private SpeedBuff = 150;
 
     private RangeWidth = 0;
     private RangeHight = 0;
 
+    private Random_Rate = [10, 40, 50]
+    private CountRate = 0;
+
     onLoad() {
         this.GetMainScripts = this.node.getComponent(GameControl);
 
         this.RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
         this.RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;
+
+        for (let i = 0; i < this.Random_Rate.length; i++) {
+            this.CountRate += this.Random_Rate[i];
+        }
     }
 
     private SpawnBuff() {
-        this.Buff_Number = Math.floor(Math.random() * 2);
+
+        this.RandomBuffPlayer();
         this.Buff_Obj = cc.instantiate(this.BuffPrefabs);
         this.Buff_Obj.children[this.Buff_Number].active = true;
-        this.BuffScale_(this.Buff_Obj);
+
+        this.BuffObject_Movement(this.Buff_Obj);
         this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node;
+
         this.RandomPositionBuff();
         this.GetTime = 0;
         this.Spawn_Buff = true;
+    }
+
+    private RandomBuffPlayer() {
+        let Random_Value = Math.floor(Math.random() * this.CountRate);
+
+        if (Random_Value <= this.Random_Rate[0]) {
+            this.Buff_Number = 0;
+        }
+        else if (Random_Value > this.Random_Rate[0] && Random_Value <= this.Random_Rate[1]) {
+            this.Buff_Number = 1;
+        }
+        else if (Random_Value > this.Random_Rate[1] && Random_Value <= this.Random_Rate[2]) {
+            this.Buff_Number = 2;
+        }
     }
 
     private RandomPositionBuff() {
@@ -71,20 +94,6 @@ export default class PlayerPowerUp extends cc.Component {
             }
 
             if (this.Spawn_Buff == true) {
-                this.Curve_Time += dt;
-
-                if (this.Curve_Time >= 0.5) {
-                    this.SwitchDiraction_Y();
-                    this.Curve_Time = 0;
-                }
-                else {
-                    if (this.Obj_Swing == false) {
-                        this.Buff_Obj.y += dt * 100;
-                    }
-                    else {
-                        this.Buff_Obj.y -= dt * 100;
-                    }
-                }
 
                 this.Buff_Obj.x += dt * this.SpeedBuff;
 
@@ -93,16 +102,6 @@ export default class PlayerPowerUp extends cc.Component {
                     this.Spawn_Buff = false;
                 }
             }
-        }
-    }
-
-    private SwitchDiraction_Y() {
-
-        if (this.Obj_Swing == true) {
-            this.Obj_Swing = false;
-        }
-        else {
-            this.Obj_Swing = true
         }
     }
 
@@ -117,11 +116,19 @@ export default class PlayerPowerUp extends cc.Component {
         else if (this.Buff_Number == 1) {
             this.GetMainScripts.Fire_Rate -= 0.05;
         }
+        else if (this.Buff_Number == 2) {
+            this.GetMainScripts.PlayerPlusHealth();
+        }
     }
 
-    BuffScale_(NodeScale: cc.Node) {
-        
-        let Scale_resize = cc.sequence(cc.scaleTo(0.4, 1.3, 1.3), cc.scaleTo(0.4, 0.8, 0.8)).repeatForever()
+    BuffObject_Movement(NodeScale: cc.Node) {
+
+        let Scale_resize = cc.sequence(cc.scaleTo(0.4, 1.3, 1.3), cc.scaleTo(0.4, 0.8, 0.8)).repeatForever();
         NodeScale.runAction(Scale_resize);
+
+        let SwingUp = cc.moveBy(this.Curve_Time, this.Buff_Obj.x, this.Buff_Obj.y + 50)
+        let SwingDown = cc.moveBy(this.Curve_Time, this.Buff_Obj.x, this.Buff_Obj.y - 50)
+        let BuffSwing_Move = cc.sequence(SwingUp, SwingDown).repeatForever();
+        this.Buff_Obj.runAction(BuffSwing_Move);
     }
 }

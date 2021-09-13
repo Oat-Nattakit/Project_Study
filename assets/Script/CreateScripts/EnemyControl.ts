@@ -10,7 +10,7 @@ import GameControl from "./GameControl";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class EnemyControl extends cc.Component {   
+export default class EnemyControl extends cc.Component {
 
     private PlayerCon: cc.Node;
     private GetMainScripts: GameControl;
@@ -21,25 +21,26 @@ export default class EnemyControl extends cc.Component {
 
         this.PlayerCon = cc.find("ObjectController");
         this.GetMainScripts = this.PlayerCon.getComponent(GameControl);
-    }    
+    }
 
     onCollisionEnter(other, self) {
         if (other.tag == 2) {
-            this.GetMainScripts.EN_SpawnPos.push(this.node.getPosition());
+            //this.GetMainScripts.EN_SpawnPos.push(this.node.getPosition());      
+            this.GetMainScripts.GetPosition_StandbyPush(this.node.getPosition());         
             this.node.destroy();
-            this.GetMainScripts.CallScore();
+            this.GetMainScripts.CallScore();                    
         }
-    }
+    }  
 
     public En_Bullect() {
         let Bullect_ = cc.instantiate(this.GetMainScripts.Prefabs_Bullet);
         Bullect_.color = cc.Color.RED;
         Bullect_.parent = this.GetMainScripts.Canvas_Node;
         Bullect_.setPosition(this.node.x, this.node.y - 100);
-        
+
         let ScriptsBullect = Bullect_.getComponent(Bullet);
         ScriptsBullect.ObjCol.tag = 3;
         ScriptsBullect.typeEn = true;
-        ScriptsBullect.node.group = 'Enemy';        
+        ScriptsBullect.node.group = 'Enemy';
     }
 }
