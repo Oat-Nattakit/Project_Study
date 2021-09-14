@@ -10,41 +10,42 @@ import GameControl from "./GameControl";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class Bullet extends cc.Component {
+export default class Bullet extends cc.Component {    
 
-    @property
-    private Speed_Bul = 100;
-    
     @property(cc.Collider)
     ObjCol: cc.Collider = null;
 
     public typeEn: boolean = false;
 
-    private PlayerCon: cc.Node;
-    private GetMainScripts: GameControl;    
+    private GetMainScripts: GameControl;
 
     onLoad() {
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
-        this.GetMainScripts = GameControl.Instance;        
-    }      
+        this.GetMainScripts = GameControl.Instance;
+    }
 
-    update(dt) {
+    start() {
         if (this.typeEn == false) {
-            this.node.y += this.Speed_Bul * (dt * 10);
+            let Bullet_Player = cc.moveTo(1, this.node.x, this.GetMainScripts.Canvas_Node.height * 0.55);
+            this.node.runAction(Bullet_Player);
         }
         else {
-            this.node.y -= this.Speed_Bul * (dt * 10);
+            let Bullet_Enemy = cc.moveTo(1, this.node.x, -(this.GetMainScripts.Canvas_Node.height * 0.55));
+            this.node.runAction(Bullet_Enemy);
         }
+    }
 
-        if(Math.abs(this.node.y) >= this.GetMainScripts.Canvas_Node.height * 0.6){                    
+    update(dt) {
+
+        if (Math.abs(this.node.y) >= this.GetMainScripts.Canvas_Node.height * 0.6) {
             this.node.destroy();
         }
     }
 
     onCollisionEnter(other, self) {
-       
+
         if (other.tag == 3) {
             this.SpawnEFX();
             this.node.destroy();
@@ -53,10 +54,10 @@ export default class Bullet extends cc.Component {
             this.SpawnEFX();
             this.node.destroy();
         }
-        if(other.tag == 4){            
-            this.GetMainScripts.PowerUp.BuffPlayerActive();
+        if (other.tag == 4) {
+            this.GetMainScripts.PowerUp.Player_Get_Buff();
             this.SpawnEFX();
-            this.node.destroy();           
+            this.node.destroy();
         }
     }
 
@@ -67,5 +68,5 @@ export default class Bullet extends cc.Component {
         setTimeout(function () {
             EFX_.destroy()
         }.bind(this), 100);
-    }    
+    }
 }

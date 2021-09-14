@@ -15,14 +15,16 @@ export default class EnemyControl extends cc.Component {
     private GetMainScripts: GameControl;
 
     onLoad() {
+
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
         this.GetMainScripts = GameControl.Instance;
     }
 
     onCollisionEnter(other, self) {
+
         if (other.tag == 2) {
-            //this.GetMainScripts.EN_SpawnPos.push(this.node.getPosition());      
+                        
             this.GetMainScripts.GetPosition_StandbyPush(this.node.getPosition());
             this.node.destroy();
             this.GetMainScripts.CallScore();
@@ -30,6 +32,7 @@ export default class EnemyControl extends cc.Component {
     }
 
     public En_Bullect() {
+
         let Bullect_ = cc.instantiate(this.GetMainScripts.Prefabs_Bullet);
         Bullect_.color = cc.Color.RED;
         Bullect_.parent = this.GetMainScripts.Canvas_Node;

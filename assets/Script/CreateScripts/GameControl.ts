@@ -35,7 +35,7 @@ export default class GameControl extends cc.Component {
     private Parent_Pos_Enemy: cc.Node = null;
 
     @property(cc.Node)
-    private Player_Obj: cc.Node = null;
+    public Player_Obj: cc.Node = null;
 
     @property(cc.Node)
     private Panel_Hiding: cc.Node = null;

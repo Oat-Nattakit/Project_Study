@@ -37,7 +37,6 @@ export default class PlayerPowerUp extends cc.Component {
         this.RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
         this.RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;
 
-
         for (let i = 0; i < this.Random_Rate.length; i++) {
             this.CountRate += this.Random_Rate[i];
         }
@@ -51,7 +50,7 @@ export default class PlayerPowerUp extends cc.Component {
         this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node;
 
         this.BuffObject_Movement();
-        this.RandomPositionBuff();
+        this.Random_Silde_Buff();
 
         this.GetTime = 0;
         this.Spawn_Buff = true;
@@ -64,15 +63,15 @@ export default class PlayerPowerUp extends cc.Component {
         if (Random_Value <= this.Random_Rate[0]) {
             this.Buff_Number = 0;
         }
-        else if (Random_Value > this.Random_Rate[0] && Random_Value <= this.Random_Rate[1]) {
+        else if (Random_Value > this.Random_Rate[0] && Random_Value <= this.Random_Rate[2]) {
             this.Buff_Number = 1;
         }
-        else if (Random_Value >= this.Random_Rate[1]) {
+        else if (Random_Value >= this.Random_Rate[2]) {
             this.Buff_Number = 2;
         }
     }
 
-    private RandomPositionBuff() {
+    private Random_Silde_Buff() {
 
         let Ran_Num = Math.floor(Math.random() * 2);
 
@@ -98,9 +97,7 @@ export default class PlayerPowerUp extends cc.Component {
             }
 
             if (this.Spawn_Buff == true) {
-
                 this.Buff_Obj.x += dt * this.SpeedBuff;
-
                 if (this.Buff_Obj.x >= (this.GetMainScripts.Canvas_Node.width * 0.7)) {
                     this.Buff_Obj.destroy();
                     this.Spawn_Buff = false;
@@ -109,7 +106,7 @@ export default class PlayerPowerUp extends cc.Component {
         }
     }
 
-    public BuffPlayerActive() {
+    public Player_Get_Buff() {
 
         this.Buff_Obj.destroy();
         this.Spawn_Buff = false;
