@@ -62,7 +62,7 @@ export default class GameControl extends cc.Component {
     private BGM_: cc.AudioSource = null;
 
     public PowerUp: PlayerPowerUp;
-    private DefVal : defult_Value;
+    private DefVal: defult_Value;
 
     @property
     public Speed = 0;
@@ -87,6 +87,7 @@ export default class GameControl extends cc.Component {
     public EN_SpawnPos: cc.Vec2[];
 
     public GameRunning: boolean;
+    public BuffShild: boolean = false;
 
     private Right: boolean;
     private Left: boolean;
@@ -108,7 +109,7 @@ export default class GameControl extends cc.Component {
     onLoad() {
 
         GameControl.Instance = this;
-        this.DefVal = new defult_Value(this.Speed,this.Fire_Rate);
+        this.DefVal = new defult_Value(this.Speed, this.Fire_Rate);
 
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
@@ -149,7 +150,7 @@ export default class GameControl extends cc.Component {
     private SetEnemy_BeforeStart() {
 
         for (let i = 0; i < this.MinEnemy; i++) {
-            this.RanPositionEn();
+            this.RanPositionEnemy();
         }
     }
 
@@ -197,11 +198,11 @@ export default class GameControl extends cc.Component {
             let Case_EnemyMorethan_20 = (this.CountEnemy >= 20 && this.CountEnemy < this.MaxEnemy && this.CountTime_SpEnemy >= this.Rate_SpawnEnemy);
 
             if (this.CountEnemy < 20) {
-                this.RanPositionEn();
+                this.RanPositionEnemy();
                 this.CountTime_SpEnemy = 0;
             }
             else if (Case_EnemyMorethan_20) {
-                this.RanPositionEn();
+                this.RanPositionEnemy();
                 this.CountTime_SpEnemy = 0;
             }
 
@@ -295,14 +296,20 @@ export default class GameControl extends cc.Component {
             }
         }
         else {
-            this.PlayerHealth--;
-            this.ComboHit_Text.node.active = false;
-            this.HitStack = 0;
-            this.Speed = this.DefVal.St_Speed;
-            this.Fire_Rate = this.DefVal.St_FirRate;
-            this.Pos_Health.children[this.Pos_Health.childrenCount - 1].destroy();
-            if(this.PlayerHealth <= 0){
-                this.GameOver();
+            if (this.BuffShild == true) {
+                this.Player_Obj.children[0].destroy();
+                this.BuffShild = false;
+            }
+            else {
+                this.PlayerHealth--;
+                this.ComboHit_Text.node.active = false;
+                this.HitStack = 0;
+                this.Speed = this.DefVal.St_Speed;
+                this.Fire_Rate = this.DefVal.St_FirRate;
+                this.Pos_Health.children[this.Pos_Health.childrenCount - 1].destroy();
+                if (this.PlayerHealth <= 0) {
+                    this.GameOver();
+                }
             }
         }
     }
@@ -323,7 +330,7 @@ export default class GameControl extends cc.Component {
         }.bind(this), 10);
     }
 
-    private RanPositionEn() {
+    private RanPositionEnemy() {
 
         let En_Pos = Math.floor(Math.random() * this.EN_SpawnPos.length);
         this.Spawn_Enemy(this.EN_SpawnPos[En_Pos]);
@@ -363,14 +370,15 @@ export default class GameControl extends cc.Component {
     }
 }
 
-class defult_Value{
+class defult_Value {
 
     public St_Speed = 0;
     public St_FirRate = 0;
 
-    constructor(SetSpeed,SetFireRate){
-        this.St_Speed = SetSpeed;
-        this.St_FirRate = SetFireRate;
+    constructor(StartSpeed, StartFireRate) {
+
+        this.St_Speed = StartSpeed;
+        this.St_FirRate = StartFireRate;
     }
 }
 

@@ -14,6 +14,9 @@ export default class PlayerPowerUp extends cc.Component {
     @property(cc.Prefab)
     private BuffPrefabs: cc.Prefab = null;
 
+    @property(cc.Prefab)
+    private ShildPrefabs: cc.Prefab = null;
+
     private GetMainScripts: GameControl;
     private Buff_Obj: cc.Node;
 
@@ -28,18 +31,14 @@ export default class PlayerPowerUp extends cc.Component {
     private RangeWidth = 0;
     private RangeHight = 0;
 
-    private Random_Rate = [10, 40, 50]
-    private CountRate = 0;
+    private Random_Rate = [10, 20, 60, 100];
+    private MaxRate = 100;
 
     onLoad() {
 
         this.GetMainScripts = GameControl.Instance;
         this.RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
-        this.RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;
-
-        for (let i = 0; i < this.Random_Rate.length; i++) {
-            this.CountRate += this.Random_Rate[i];
-        }
+        this.RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;        
     }
 
     private SpawnBuff() {
@@ -58,17 +57,20 @@ export default class PlayerPowerUp extends cc.Component {
 
     private RandomBuffPlayer() {
 
-        let Random_Value = Math.floor(Math.random() * this.CountRate);
+        let Random_Value = Math.floor(Math.random() * this.MaxRate);
 
         if (Random_Value <= this.Random_Rate[0]) {
             this.Buff_Number = 0;
         }
-        else if (Random_Value > this.Random_Rate[0] && Random_Value <= this.Random_Rate[2]) {
+        else if (Random_Value > this.Random_Rate[0] && Random_Value <= this.Random_Rate[1]) {
             this.Buff_Number = 1;
         }
-        else if (Random_Value >= this.Random_Rate[2]) {
+        else if (Random_Value > this.Random_Rate[1] && Random_Value <= this.Random_Rate[2]) {
             this.Buff_Number = 2;
         }
+        else if (Random_Value >= this.Random_Rate[2]) {
+            this.Buff_Number = 3;
+        }        
     }
 
     private Random_Silde_Buff() {
@@ -114,10 +116,18 @@ export default class PlayerPowerUp extends cc.Component {
         if (this.Buff_Number == 0) {
             this.GetMainScripts.PlayerPlusHealth();
         }
-        else if (this.Buff_Number == 1) {
-            this.GetMainScripts.Fire_Rate -= 0.05;
+        else if (this.Buff_Number == 1 && this.GetMainScripts.BuffShild == false) {
+
+            let SHild = cc.instantiate(this.ShildPrefabs);
+            SHild.parent = this.GetMainScripts.Player_Obj;
+            SHild.runAction(cc.scaleTo(0.5, 1, 1));
+            SHild.runAction(cc.rotateBy(2, -360).repeatForever());
+            this.GetMainScripts.BuffShild = true;
         }
         else if (this.Buff_Number == 2) {
+            this.GetMainScripts.Fire_Rate -= 0.05;
+        }
+        else if (this.Buff_Number == 3) {
             this.GetMainScripts.Speed += 100;
         }
     }

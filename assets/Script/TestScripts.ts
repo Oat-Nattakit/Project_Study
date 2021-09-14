@@ -33,13 +33,11 @@ export default class TestScripts extends cc.Component {
 
     start() {
 
-        let SwingUp = cc.moveBy(0.5, (this.MoveNodeObj.x) * -1, this.MoveNodeObj.y + 50);
-        let SwingDown = cc.moveBy(0.5,(this.MoveNodeObj.x) * -1, this.MoveNodeObj.y - 50);
-        let seq = cc.sequence(SwingUp, SwingDown);
-        this.MoveNodeObj.runAction(seq);
-        
-        let movement = cc.moveTo(5, (this.MoveNodeObj.x) * -1, this.MoveNodeObj.y);       
-        this.MoveNodeObj.runAction(movement);
+        let rotm = cc.rotateBy(2.5,-360).repeatForever();
+        let rot = cc.repeatForever(rotm);
+
+        this.MoveNodeObj.runAction(rot);
+
     }
 }
 
