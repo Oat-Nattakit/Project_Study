@@ -46,6 +46,9 @@ export default class GameControl extends cc.Component {
     @property(cc.Node)
     public Pos_Health: cc.Node = null;
 
+    @property(cc.Node)
+    public Pos_ShowBuff : cc.Node = null;
+
     @property(cc.Prefab)
     public Enemy: cc.Prefab = null;
 
@@ -109,6 +112,7 @@ export default class GameControl extends cc.Component {
     onLoad() {
 
         GameControl.Instance = this;
+
         this.DefVal = new defult_Value(this.Speed, this.Fire_Rate);
 
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
@@ -214,7 +218,7 @@ export default class GameControl extends cc.Component {
             }
 
             this.CountTimePlay += dt;
-            if (this.CountTimePlay >= 30 && this.Enamy_FireRate >= 0.4) {
+            if (this.CountTimePlay >= 20 && this.Enamy_FireRate >= 0.2) {
                 this.Enamy_FireRate -= 0.1;
                 this.CountTimePlay = 0;
             }
@@ -282,6 +286,9 @@ export default class GameControl extends cc.Component {
             this.scrorePlayer += 1;
             this.Hit_and_GetHit_Ststus(true);
             this.Score_Text.string = "Score : " + this.scrorePlayer.toString()
+
+            let Hit_Bleeding = cc.sequence(cc.scaleTo(0.05, 0.7, 0.7), cc.scaleTo(0.05, 1, 1));
+            this.ComboHit_Text.node.runAction(Hit_Bleeding);
         }
     }
 
@@ -307,6 +314,7 @@ export default class GameControl extends cc.Component {
                 this.Speed = this.DefVal.St_Speed;
                 this.Fire_Rate = this.DefVal.St_FirRate;
                 this.Pos_Health.children[this.Pos_Health.childrenCount - 1].destroy();
+                this.PowerUp.Player_Lost_Buff();
                 if (this.PlayerHealth <= 0) {
                     this.GameOver();
                 }
@@ -370,7 +378,7 @@ export default class GameControl extends cc.Component {
     }
 }
 
-class defult_Value {
+export class defult_Value {
 
     public St_Speed = 0;
     public St_FirRate = 0;
@@ -379,6 +387,6 @@ class defult_Value {
 
         this.St_Speed = StartSpeed;
         this.St_FirRate = StartFireRate;
-    }
+    }    
 }
 
