@@ -185,8 +185,5 @@ export default class PlayerPowerUp extends cc.Component {
 
         return Buff_Pic.children[this.Buff_Number];
     }
-
-    
-
     
 }

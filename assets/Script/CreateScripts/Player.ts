@@ -15,14 +15,7 @@ export default class Player extends cc.Component {
     @property(cc.AudioSource)
     public SFX_: cc.AudioSource = null;
 
-    private PlayerCon: cc.Node;
-    private GetMainScripts: GameControl;
-
-    private HitTime = 0;
-
-    private PlayerHit: boolean = false;
-
-    public CountHit = 0;
+    private GetMainScripts: GameControl;      
 
     onLoad() {
         let manager = cc.director.getCollisionManager();
@@ -31,20 +24,7 @@ export default class Player extends cc.Component {
 
     start() {
         this.GetMainScripts = GameControl.Instance;
-    }
-
-    update(dt) {
-
-        if (this.PlayerHit == true) {
-            this.HitTime += dt;
-            this.node.color = cc.Color.RED;
-            if (this.HitTime >= 0.2) {
-                this.node.color = cc.Color.WHITE;
-                this.HitTime = 0;
-                this.PlayerHit = false;
-            }
-        }
-    }
+    }    
 
     onCollisionEnter(other, self) {
         if (other.tag == 3) {
@@ -52,9 +32,13 @@ export default class Player extends cc.Component {
         }
     }
 
-    private PlayerHealt_Hit() {        
-        this.HitTime = 0;
-        this.PlayerHit = true;
-        this.GetMainScripts.Hit_and_GetHit_Ststus(false);        
+    private PlayerHealt_Hit() {   
+
+        cc.tween(this.node)
+        .to(0.1, { color : cc.Color.RED })
+        .to(0.1, { color : cc.Color.WHITE})
+        .start();
+
+        this.GetMainScripts.Hit_and_GetHit_Ststus(false);  
     }
 }

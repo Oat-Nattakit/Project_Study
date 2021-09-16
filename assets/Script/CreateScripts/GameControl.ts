@@ -19,8 +19,8 @@ export default class GameControl extends cc.Component {
     @property(cc.Label)
     private Score_Text: cc.Label = null;
 
-    @property(cc.Label)
-    private GameOver_text: cc.Label = null;
+    @property(cc.Node)
+    private GameOver_Node: cc.Node = null;
 
     @property(cc.Label)
     private ComboHit_Text: cc.Label = null;
@@ -175,13 +175,13 @@ export default class GameControl extends cc.Component {
                 let LimitRight = (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * 0.3)
                 if (LimitRight) {
                     this.Player_Obj.x += this.Speed * dt;
-                }                
+                }
             }
             else if (this.Left == true) {
                 let LimitLeft = (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width) * 0.3)
                 if (LimitLeft) {
                     this.Player_Obj.x -= this.Speed * dt;
-                }                
+                }
             }
 
             if (this.SpawnBullect == true) {
@@ -197,11 +197,9 @@ export default class GameControl extends cc.Component {
 
             if (this.CountEnemy < 20) {
                 this.RanPositionEnemy();
-                //this.CountTime_SpEnemy = 0;
             }
             else if (Case_EnemyMorethan_20) {
                 this.RanPositionEnemy();
-                //this.CountTime_SpEnemy = 0;
             }
 
             this.CountFireEN += dt;
@@ -294,6 +292,14 @@ export default class GameControl extends cc.Component {
             this.ComboHit_Text.string = "HIT : " + this.HitStack.toString();
             if (this.HitStack % 50 == 0) {
                 this.PlayerPlusHealth();
+
+                let AddHP = cc.instantiate(this.ComboHit_Text.node);
+                AddHP.active = true;
+                AddHP.getComponent(cc.Label).string = "HEALTH + 1";
+                AddHP.parent = this.Canvas_Node;
+                AddHP.setPosition(0, 20);
+                let movetment = cc.sequence(cc.moveBy(0.5, 0, AddHP.y + 60), cc.destroySelf());
+                AddHP.runAction(movetment);
             }
         }
         else {
@@ -327,7 +333,7 @@ export default class GameControl extends cc.Component {
 
         if (this.PlayerHealth < this.PlayerMaxHealth) {
             this.PlayerHealth += 1;
-            let H_P = cc.instantiate(this.Health_)
+            let H_P = cc.instantiate(this.Health_);
             H_P.parent = this.Pos_Health;
         }
     }
@@ -372,7 +378,11 @@ export default class GameControl extends cc.Component {
 
         this.GameRunning = false;
         this.BGM_.stop();
-        this.GameOver_text.node.active = true;
+        this.GameOver_Node.active = true;
+
+        let Get_GO_Text = this.GameOver_Node.children[0];
+        let Text_Scale = cc.sequence(cc.scaleTo(0.2, 0.95, 0.95), cc.scaleTo(0.2, 1, 1)).repeatForever();
+        Get_GO_Text.runAction(Text_Scale);
     }
 
     public PlayGameAgain() {
