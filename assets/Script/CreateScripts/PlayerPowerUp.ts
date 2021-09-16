@@ -102,7 +102,7 @@ export default class PlayerPowerUp extends cc.Component {
         }
         else if (Random_Value >= this.Random_Rate[2]) {
             this.Buff_Number = 3;
-        }        
+        }           
     }
 
     private Random_Silde_Buff() {

@@ -524,15 +524,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
+      "r": 31,
       "g": 255,
-      "b": 255,
+      "b": 0,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 75.61,
-      "height": 50.4
+      "width": 78.59,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -544,7 +544,7 @@
       "ctor": "Float64Array",
       "array": [
         45,
-        -20,
+        -15,
         0,
         0,
         0,
@@ -585,11 +585,13 @@
     "_dstBlendFactor": 771,
     "_string": "x 10",
     "_N$string": "x 10",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "080b219f-23fa-4094-87eb-4b2a73110eb2"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -790,7 +792,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Label",
+    "_name": "CountBuff",
     "_objFlags": 0,
     "_parent": {
       "__id__": 20
@@ -808,15 +810,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
+      "r": 31,
       "g": 255,
-      "b": 255,
+      "b": 0,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 75.61,
-      "height": 50.4
+      "width": 78.59,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -828,7 +830,7 @@
       "ctor": "Float64Array",
       "array": [
         45,
-        -20,
+        -15,
         0,
         0,
         0,
@@ -869,11 +871,13 @@
     "_dstBlendFactor": 771,
     "_string": "x 10",
     "_N$string": "x 10",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "080b219f-23fa-4094-87eb-4b2a73110eb2"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,

@@ -47,7 +47,7 @@ export default class GameControl extends cc.Component {
     public Pos_Health: cc.Node = null;
 
     @property(cc.Node)
-    public Pos_ShowBuff : cc.Node = null;
+    public Pos_ShowBuff: cc.Node = null;
 
     @property(cc.Prefab)
     public Enemy: cc.Prefab = null;
@@ -175,19 +175,13 @@ export default class GameControl extends cc.Component {
                 let LimitRight = (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * 0.3)
                 if (LimitRight) {
                     this.Player_Obj.x += this.Speed * dt;
-                }
-                else {
-                    this.Player_Obj.x += 0;
-                }
+                }                
             }
             else if (this.Left == true) {
                 let LimitLeft = (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width) * 0.3)
                 if (LimitLeft) {
                     this.Player_Obj.x -= this.Speed * dt;
-                }
-                else {
-                    this.Player_Obj.x -= 0;
-                }
+                }                
             }
 
             if (this.SpawnBullect == true) {
@@ -203,11 +197,11 @@ export default class GameControl extends cc.Component {
 
             if (this.CountEnemy < 20) {
                 this.RanPositionEnemy();
-                this.CountTime_SpEnemy = 0;
+                //this.CountTime_SpEnemy = 0;
             }
             else if (Case_EnemyMorethan_20) {
                 this.RanPositionEnemy();
-                this.CountTime_SpEnemy = 0;
+                //this.CountTime_SpEnemy = 0;
             }
 
             this.CountFireEN += dt;
@@ -309,17 +303,24 @@ export default class GameControl extends cc.Component {
             }
             else {
                 this.PlayerHealth--;
-                this.ComboHit_Text.node.active = false;
                 this.HitStack = 0;
-                this.Speed = this.DefVal.St_Speed;
-                this.Fire_Rate = this.DefVal.St_FirRate;
-                this.Pos_Health.children[this.Pos_Health.childrenCount - 1].destroy();
-                this.PowerUp.Player_Lost_Buff();
+                this.ComboHit_Text.node.active = false;
+
+                this.ResetBuff_Player();
+
                 if (this.PlayerHealth <= 0) {
                     this.GameOver();
                 }
             }
         }
+    }
+
+    private ResetBuff_Player() {
+
+        this.Speed = this.DefVal.St_Speed;
+        this.Fire_Rate = this.DefVal.St_FirRate;
+        this.Pos_Health.children[this.Pos_Health.childrenCount - 1].destroy();
+        this.PowerUp.Player_Lost_Buff();
     }
 
     public PlayerPlusHealth() {
@@ -343,6 +344,7 @@ export default class GameControl extends cc.Component {
         let En_Pos = Math.floor(Math.random() * this.EN_SpawnPos.length);
         this.Spawn_Enemy(this.EN_SpawnPos[En_Pos]);
         this.EN_SpawnPos.splice(En_Pos, 1);
+        this.CountTime_SpEnemy = 0;
     }
 
     private Spawn_Enemy(PosSP: cc.Vec2) {
@@ -387,6 +389,6 @@ export class defult_Value {
 
         this.St_Speed = StartSpeed;
         this.St_FirRate = StartFireRate;
-    }    
+    }
 }
 
