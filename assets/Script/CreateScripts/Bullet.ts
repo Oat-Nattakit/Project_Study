@@ -18,30 +18,32 @@ export default class Bullet extends cc.Component {
     public typeEn: boolean = false;
 
     private GetMainScripts: GameControl;
+    private Bullet_LimitMove = 0;
 
     onLoad() {
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
         this.GetMainScripts = GameControl.Instance;
+
+        this.Bullet_LimitMove = this.GetMainScripts.Canvas_Node.height * 0.5;
     }
 
     start() {
-        if (this.typeEn == false) {
-            let Bullet_Player = cc.moveTo(1, this.node.x, this.GetMainScripts.Canvas_Node.height * 0.55);
-            this.node.runAction(Bullet_Player);
+        if (this.typeEn == false) {            
+            let Bullet_Player = cc.moveTo(1, this.node.x, this.Bullet_LimitMove);
+            this.Bullet_Movement(Bullet_Player);            
         }
         else {
-            let Bullet_Enemy = cc.moveTo(1, this.node.x, -(this.GetMainScripts.Canvas_Node.height * 0.55));
-            this.node.runAction(Bullet_Enemy);
+            let Bullet_Enemy = cc.moveTo(1, this.node.x, -(this.Bullet_LimitMove));
+            this.Bullet_Movement(Bullet_Enemy);            
         }
-    }
+    }    
 
-    update(dt) {
+    private Bullet_Movement(Move_Action : cc.ActionInterval){
 
-        if (Math.abs(this.node.y) >= this.GetMainScripts.Canvas_Node.height * 0.6) {
-            this.node.destroy();
-        }
+        let Move_OutRange = cc.sequence(Move_Action,cc.destroySelf());
+        this.node.runAction(Move_OutRange);
     }
 
     onCollisionEnter(other, self) {

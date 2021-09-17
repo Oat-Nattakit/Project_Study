@@ -17,10 +17,7 @@ export default class GameControl extends cc.Component {
     static Instance: GameControl = null;
 
     @property(cc.Label)
-    private Score_Text: cc.Label = null;
-
-    @property(cc.Node)
-    private GameOver_Node: cc.Node = null;
+    private Score_Text: cc.Label = null;    
 
     @property(cc.Label)
     private ComboHit_Text: cc.Label = null;
@@ -30,6 +27,9 @@ export default class GameControl extends cc.Component {
 
     @property(cc.Button)
     private Play_Again_Btn: cc.Button = null;
+    
+    @property(cc.Node)
+    private GameOver_Node: cc.Node = null;
 
     @property(cc.Node)
     private Parent_Pos_Enemy: cc.Node = null;
@@ -57,6 +57,9 @@ export default class GameControl extends cc.Component {
 
     @property(cc.Prefab)
     private Health_: cc.Prefab = null;
+
+    @property(cc.Prefab)
+    private Plus_HP: cc.Prefab = null;
 
     @property(cc.Prefab)
     public Prefabs_Bullet: cc.Prefab = null;
@@ -194,7 +197,6 @@ export default class GameControl extends cc.Component {
 
             this.CountTime_SpEnemy += dt;
             let Case_EnemyMorethan_20 = (this.CountEnemy >= 20 && this.CountEnemy < this.MaxEnemy && this.CountTime_SpEnemy >= this.Rate_SpawnEnemy);
-
             if (this.CountEnemy < 20) {
                 this.RanPositionEnemy();
             }
@@ -292,14 +294,9 @@ export default class GameControl extends cc.Component {
             this.ComboHit_Text.string = "HIT : " + this.HitStack.toString();
             if (this.HitStack % 50 == 0) {
                 this.PlayerPlusHealth();
+                this.ShowPlus_HP();
 
-                let AddHP = cc.instantiate(this.ComboHit_Text.node);
-                AddHP.active = true;
-                AddHP.getComponent(cc.Label).string = "HEALTH + 1";
-                AddHP.parent = this.Canvas_Node;
-                AddHP.setPosition(0, 20);
-                let movetment = cc.sequence(cc.moveBy(0.5, 0, AddHP.y + 60), cc.destroySelf());
-                AddHP.runAction(movetment);
+
             }
         }
         else {
@@ -319,6 +316,15 @@ export default class GameControl extends cc.Component {
                 }
             }
         }
+    }
+
+    private ShowPlus_HP() {
+
+        let AddHP = cc.instantiate(this.Plus_HP);           
+        AddHP.parent = this.Canvas_Node;
+        AddHP.setPosition(0, 20);
+        let movetment = cc.sequence(cc.moveBy(0.5, 0, AddHP.y + 40), cc.destroySelf());
+        AddHP.runAction(movetment);
     }
 
     private ResetBuff_Player() {
