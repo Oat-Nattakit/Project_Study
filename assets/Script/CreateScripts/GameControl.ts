@@ -6,8 +6,8 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import EnemyControl from "./EnemyControl";
-import Player from "./Player";
-import PlayerPowerUp from "./PlayerPowerUp";
+import PowerManager from "./PowerManager";
+import Sound_Setting from "./Sound_Setting";
 
 const { ccclass, property } = cc._decorator;
 
@@ -17,7 +17,7 @@ export default class GameControl extends cc.Component {
     static Instance: GameControl = null;
 
     @property(cc.Label)
-    private Score_Text: cc.Label = null;    
+    private Score_Text: cc.Label = null;
 
     @property(cc.Label)
     private ComboHit_Text: cc.Label = null;
@@ -27,7 +27,7 @@ export default class GameControl extends cc.Component {
 
     @property(cc.Button)
     private Play_Again_Btn: cc.Button = null;
-    
+
     @property(cc.Node)
     private GameOver_Node: cc.Node = null;
 
@@ -64,11 +64,9 @@ export default class GameControl extends cc.Component {
     @property(cc.Prefab)
     public Prefabs_Bullet: cc.Prefab = null;
 
-    @property(cc.AudioSource)
-    private BGM_: cc.AudioSource = null;
-
-    public PowerUp: PlayerPowerUp;
-    private DefVal: defult_Value;
+    public PowerManager: PowerManager;
+    public DefVal: defult_Value;
+    private Sound_Setting: Sound_Setting;
 
     @property
     public Speed = 0;
@@ -108,20 +106,22 @@ export default class GameControl extends cc.Component {
     private Rate_SpawnEnemy = 0.6;
 
     private CountFireEN = 0;
-    private Enamy_FireRate = 1;
+    private Enamy_FireRate = 1.5;
     private LimitMove = 0;
     private CountTimePlay = 0;
 
     onLoad() {
 
-        GameControl.Instance = this;
+        GameControl.Instance = this;        
 
         this.DefVal = new defult_Value(this.Speed, this.Fire_Rate);
 
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
-        this.PowerUp = this.node.getComponent(PlayerPowerUp);
+        this.PowerManager = this.node.getComponent(PowerManager);
+        this.Sound_Setting = this.node.getComponent(Sound_Setting);
+
         this.GetPos_ = new Array();
         this.LimitMove = this.Canvas_Node.getComponent(cc.Canvas).designResolution.width;
         this.GetCurrentPos_OnScene();
@@ -167,7 +167,7 @@ export default class GameControl extends cc.Component {
         this.Panel_Hiding.active = false;
         this.Start_Btn.node.active = false;
         this.Spawn_PlayerHealth();
-        this.BGM_.play();
+        this.Sound_Setting.BMG_Sound.play();
     }
 
     update(dt) {
@@ -212,7 +212,7 @@ export default class GameControl extends cc.Component {
             }
 
             this.CountTimePlay += dt;
-            if (this.CountTimePlay >= 20 && this.Enamy_FireRate >= 0.2) {
+            if (this.CountTimePlay >= 30 && this.Enamy_FireRate >= 0.2) {
                 this.Enamy_FireRate -= 0.1;
                 this.CountTimePlay = 0;
             }
@@ -265,8 +265,7 @@ export default class GameControl extends cc.Component {
     private Spawn_Bullect() {
 
         let Bullect_ = cc.instantiate(this.Prefabs_Bullet);
-        this.Player_Obj.getComponent(Player).SFX_.play();
-        Bullect_.color = cc.Color.GREEN;
+        this.Sound_Setting.SFX_Sound.play();        
         Bullect_.parent = this.Canvas_Node;
         Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);
     }
@@ -286,7 +285,7 @@ export default class GameControl extends cc.Component {
         }
     }
 
-    public Hit_and_GetHit_Ststus(Hit_Status: boolean) {
+    public Hit_and_GetHit_Ststus(Hit_Status: boolean, Damage = 0) {
 
         if (Hit_Status == true) {
             this.HitStack += 1;
@@ -295,8 +294,6 @@ export default class GameControl extends cc.Component {
             if (this.HitStack % 50 == 0) {
                 this.PlayerPlusHealth();
                 this.ShowPlus_HP();
-
-
             }
         }
         else {
@@ -305,13 +302,14 @@ export default class GameControl extends cc.Component {
                 this.BuffShild = false;
             }
             else {
-                this.PlayerHealth--;
+                this.PlayerHealth = this.PlayerHealth - Damage;
                 this.HitStack = 0;
                 this.ComboHit_Text.node.active = false;
+                this.Pos_Health.children.splice(this.Pos_Health.childrenCount - Damage, Damage);                                            
 
-                this.ResetBuff_Player();
-
-                if (this.PlayerHealth <= 0) {
+                this.PowerManager.Player_Lost_Buff();
+                //this.ResetBuff_Player();
+                if (this.PlayerHealth <= 0) {                    
                     this.GameOver();
                 }
             }
@@ -320,19 +318,18 @@ export default class GameControl extends cc.Component {
 
     private ShowPlus_HP() {
 
-        let AddHP = cc.instantiate(this.Plus_HP);           
+        let AddHP = cc.instantiate(this.Plus_HP);
         AddHP.parent = this.Canvas_Node;
         AddHP.setPosition(0, 20);
         let movetment = cc.sequence(cc.moveBy(0.5, 0, AddHP.y + 40), cc.destroySelf());
         AddHP.runAction(movetment);
     }
 
-    private ResetBuff_Player() {
+    public ResetBuff_Player() {
 
         this.Speed = this.DefVal.St_Speed;
         this.Fire_Rate = this.DefVal.St_FirRate;
-        this.Pos_Health.children[this.Pos_Health.childrenCount - 1].destroy();
-        this.PowerUp.Player_Lost_Buff();
+        //this.PowerManager.Player_Lost_Buff();
     }
 
     public PlayerPlusHealth() {
@@ -383,7 +380,7 @@ export default class GameControl extends cc.Component {
     public GameOver() {
 
         this.GameRunning = false;
-        this.BGM_.stop();
+        this.Sound_Setting.BMG_Sound.stop();
         this.GameOver_Node.active = true;
 
         let Get_GO_Text = this.GameOver_Node.children[0];

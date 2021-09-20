@@ -9,7 +9,7 @@ import GameControl from "./GameControl";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class PlayerPowerUp extends cc.Component {
+export default class PowerManager extends cc.Component {
 
     @property(cc.Prefab)
     private BuffPrefabs: cc.Prefab = null;
@@ -35,6 +35,8 @@ export default class PlayerPowerUp extends cc.Component {
     private Buff_Number = 0;
     private SpeedBuff = 150;
 
+    public Debuff_Number = 0;
+
     private CountBuffSpeed = 0;
     private CountBuffFire = 0;
 
@@ -43,6 +45,9 @@ export default class PlayerPowerUp extends cc.Component {
 
     private Random_Rate = [10, 20, 60, 100];
     private MaxRate = 100;
+
+    private St_Speed: Boolean = false;
+    private St_Fire: Boolean = false;
 
     onLoad() {
 
@@ -102,7 +107,7 @@ export default class PlayerPowerUp extends cc.Component {
         }
         else if (Random_Value >= this.Random_Rate[2]) {
             this.Buff_Number = 3;
-        }           
+        }        
     }
 
     private Random_Silde_Buff() {
@@ -135,7 +140,7 @@ export default class PlayerPowerUp extends cc.Component {
 
         this.Buff_Obj.destroy();
         this.Spawn_Buff = false;
-
+        
         if (this.Buff_Number == 0) {
             this.GetMainScripts.PlayerPlusHealth();
         }
@@ -149,41 +154,72 @@ export default class PlayerPowerUp extends cc.Component {
         }
         else if (this.Buff_Number == 2) {
 
-            if (this.CountBuffFire == 0) {
-                this.Fire_Count = this.Show_Buff_Player().getComponentInChildren(cc.Label);
+            if (this.St_Fire == false) {
+                this.Fire_Count = this.Show_Buff_Player(this.Buff_Number).getComponentInChildren(cc.Label);
+                this.St_Fire = true;
             }
             this.GetMainScripts.Fire_Rate -= 0.05;
-            this.CountBuffFire++;
-            this.Fire_Count.string = "x " + this.CountBuffFire;
 
+            this.Fire_Count.string = ": " + this.GetMainScripts.Fire_Rate.toFixed(2);
         }
         else if (this.Buff_Number == 3) {
-
-            if (this.CountBuffSpeed == 0) {
-                this.Speed_Count = this.Show_Buff_Player().getComponentInChildren(cc.Label);
+            
+            if (this.St_Speed == false) {
+                this.Speed_Count = this.Show_Buff_Player(this.Buff_Number).getComponentInChildren(cc.Label);
+                this.St_Speed = true;
             }
             this.GetMainScripts.Speed += 100;
-            this.CountBuffSpeed++;
-            this.Speed_Count.string = "x " + this.CountBuffSpeed;
+            this.Speed_Count.string = ": " + (this.GetMainScripts.Speed) / 100;
         }
     }
-    
-    public Player_Lost_Buff(){        
-        
-        let Parent_PicBuff = this.GetMainScripts.Pos_ShowBuff;
-        Parent_PicBuff.children.splice(0,Parent_PicBuff.childrenCount);
-        this.CountBuffSpeed = 0;
-        this.CountBuffFire = 0;
-    }
-    
-    Show_Buff_Player() {
 
+    public Player_Lost_Buff() {
+
+        let Parent_PicBuff = this.GetMainScripts.Pos_ShowBuff;
+
+        if (this.GetMainScripts.Fire_Rate < this.GetMainScripts.DefVal.St_FirRate || this.GetMainScripts.Speed > this.GetMainScripts.DefVal.St_Speed) {
+            Parent_PicBuff.children.splice(0, Parent_PicBuff.childrenCount);            
+            this.GetMainScripts.ResetBuff_Player();
+            this.St_Fire = false;
+            this.St_Speed = false; 
+        }
+
+        if (this.Debuff_Number != 0) {
+            this.Player_Get_Debuff();
+        }
+    }
+
+    private Player_Get_Debuff() {
+
+        if (this.Debuff_Number == 2) {
+
+            if (this.St_Fire == false) {
+                this.Fire_Count = this.Show_Buff_Player(this.Debuff_Number).getComponentInChildren(cc.Label);
+                this.St_Fire = true;
+            }
+            this.GetMainScripts.Fire_Rate += 0.05;
+            this.Fire_Count.string = ": " + this.GetMainScripts.Fire_Rate.toFixed(2);
+        }
+        else if (this.Debuff_Number == 3) {
+
+            if (this.St_Speed == false) {
+                this.Speed_Count = this.Show_Buff_Player(this.Debuff_Number).getComponentInChildren(cc.Label);
+                this.St_Speed = true;
+            }
+            this.GetMainScripts.Speed -= 50;
+            this.Speed_Count.string = ": " + (this.GetMainScripts.Speed) / 100;
+        }
+    }
+
+    Show_Buff_Player(BuffNuber) {
+
+        console.log(BuffNuber);
         let Buff_Pic = cc.instantiate(this.Buff_Picture);
-        Buff_Pic.children[this.Buff_Number].active = true;
+        Buff_Pic.children[BuffNuber].active = true;
         Buff_Pic.parent = this.GetMainScripts.Pos_ShowBuff;
         Buff_Pic.scale = 0.5;
 
-        return Buff_Pic.children[this.Buff_Number];
+        return Buff_Pic.children[BuffNuber];
     }
-    
+
 }

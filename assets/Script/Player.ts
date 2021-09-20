@@ -28,7 +28,7 @@ export default class Player extends cc.Component {
 
     onCollisionEnter(other, self) {
         if (other.tag == 3) {
-            this.PlayerHealt_Hit();
+            //this.PlayerHealt_Hit();            
         }
     }
 
@@ -39,6 +39,6 @@ export default class Player extends cc.Component {
         .to(0.1, { color : cc.Color.WHITE})
         .start();
 
-        this.GetMainScripts.Hit_and_GetHit_Ststus(false);  
+        //this.GetMainScripts.Hit_and_GetHit_Ststus(false);  
     }
 }
