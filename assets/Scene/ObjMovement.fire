@@ -1615,7 +1615,7 @@
     "_enabled": true,
     "_normalMaterial": null,
     "_grayMaterial": null,
-    "duration": 0.1,
+    "duration": 0,
     "zoomScale": 1.2,
     "clickEvents": [],
     "_N$interactable": true,
@@ -2120,7 +2120,7 @@
     "_enabled": true,
     "_normalMaterial": null,
     "_grayMaterial": null,
-    "duration": 0.1,
+    "duration": 0,
     "zoomScale": 1.2,
     "clickEvents": [],
     "_N$interactable": true,
@@ -2383,7 +2383,7 @@
         1,
         1,
         1,
-        1
+        0
       ]
     },
     "_eulerAngles": {
@@ -2565,7 +2565,7 @@
     "_enabled": true,
     "_normalMaterial": null,
     "_grayMaterial": null,
-    "duration": 0.1,
+    "duration": 0,
     "zoomScale": 1.2,
     "clickEvents": [],
     "_N$interactable": true,
@@ -2938,7 +2938,7 @@
     "_enabled": true,
     "_normalMaterial": null,
     "_grayMaterial": null,
-    "duration": 0.1,
+    "duration": 0,
     "zoomScale": 1.2,
     "clickEvents": [],
     "_N$interactable": true,
@@ -3002,7 +3002,9 @@
     "hoverSprite": {
       "__uuid__": "baabc503-27a9-4fe1-932d-456a41320abd"
     },
-    "_N$disabledSprite": null,
+    "_N$disabledSprite": {
+      "__uuid__": "29158224-f8dd-4661-a796-1ffab537140e"
+    },
     "_N$target": {
       "__id__": 57
     },
@@ -3346,20 +3348,23 @@
     "Pos_ShowBuff": {
       "__id__": 23
     },
+    "Prefabs_Bullet": {
+      "__uuid__": "273ad28f-3eb3-4a3a-bd1b-7bc86dfce8f2"
+    },
     "Enemy": {
       "__uuid__": "0e95893b-e071-451f-8dd0-c437eaf1ba56"
     },
-    "EFX": {
+    "Boom_EFX": {
       "__uuid__": "1469f682-a3aa-4b3b-ac3b-f54bb45d45bc"
     },
-    "Health_": {
+    "Health_Prefabs": {
       "__uuid__": "3b24f610-26a6-4fcd-83be-d444f159a51c"
+    },
+    "Health_EFX": {
+      "__uuid__": "3e7fdaee-e1f5-4983-829c-f3044a7b484f"
     },
     "Plus_HP": {
       "__uuid__": "8b866fcf-92b4-4265-9254-f6b5bdd5e2af"
-    },
-    "Prefabs_Bullet": {
-      "__uuid__": "273ad28f-3eb3-4a3a-bd1b-7bc86dfce8f2"
     },
     "Speed": 500,
     "Fire_Rate": 0.5,

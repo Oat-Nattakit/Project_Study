@@ -5,6 +5,8 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+//import { Default_Value_Setting } from "./Default_Value_Setting";
+import { Default_Value_Setting } from "./Default_Value_Setting";
 import EnemyControl from "./EnemyControl";
 import PowerManager from "./PowerManager";
 import Sound_Setting from "./Sound_Setting";
@@ -50,22 +52,25 @@ export default class GameControl extends cc.Component {
     public Pos_ShowBuff: cc.Node = null;
 
     @property(cc.Prefab)
+    public Prefabs_Bullet: cc.Prefab = null;
+
+    @property(cc.Prefab)
     public Enemy: cc.Prefab = null;
 
     @property(cc.Prefab)
-    public EFX: cc.Prefab = null;
+    public Boom_EFX: cc.Prefab = null;
 
     @property(cc.Prefab)
-    private Health_: cc.Prefab = null;
+    private Health_Prefabs: cc.Prefab = null;
+
+    @property(cc.Prefab)
+    private Health_EFX: cc.Prefab = null;
 
     @property(cc.Prefab)
     private Plus_HP: cc.Prefab = null;
 
-    @property(cc.Prefab)
-    public Prefabs_Bullet: cc.Prefab = null;
-
     public PowerManager: PowerManager;
-    public DefVal: defult_Value;
+    public DefVal: Default_Value_Setting = Default_Value_Setting.getInstance();
     private Sound_Setting: Sound_Setting;
 
     @property
@@ -112,15 +117,17 @@ export default class GameControl extends cc.Component {
 
     onLoad() {
 
-        GameControl.Instance = this;        
+        GameControl.Instance = this;
 
-        this.DefVal = new defult_Value(this.Speed, this.Fire_Rate);
-
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+        if (this.DefVal.Def_Speed == null && this.DefVal.Def_FireRate == null) {
+            this.DefVal.Player_Def_Value(this.Speed, this.Fire_Rate);
+        }
 
         this.PowerManager = this.node.getComponent(PowerManager);
         this.Sound_Setting = this.node.getComponent(Sound_Setting);
+
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
         this.GetPos_ = new Array();
         this.LimitMove = this.Canvas_Node.getComponent(cc.Canvas).designResolution.width;
@@ -138,20 +145,20 @@ export default class GameControl extends cc.Component {
             PreSp.parent = this.Parent_Pos_Enemy;
         }
         setTimeout(function () {
-            this.ColletPosition();
-        }.bind(this), 0.1);
+            GameControl.Instance.ColletPosition();
+        }, 10);        
     }
 
-    ColletPosition() {
+    ColletPosition() {       
+        
+        for (let i = 0; i < this.Parent_Pos_Enemy.childrenCount; i++) {
+            this.EN_SpawnPos.push(this.Parent_Pos_Enemy.children[i].getPosition());           
+        }
 
-        for (let i = 0; i < this.Parent_Pos_Enemy.childrenCount; i++) {
-            this.EN_SpawnPos.push(this.Parent_Pos_Enemy.children[i].getPosition());
-        }
-        for (let i = 0; i < this.Parent_Pos_Enemy.childrenCount; i++) {
-            this.Parent_Pos_Enemy.children[i].destroy();
-        }
-        this.Parent_Pos_Enemy.getComponent(cc.Layout).type = cc.Layout.Type.NONE;
-        this.SetEnemy_BeforeStart();
+        this.Parent_Pos_Enemy.destroyAllChildren();        
+        this.Parent_Pos_Enemy.getComponent(cc.Layout).enabled = false;
+        
+        this.SetEnemy_BeforeStart();        
     }
 
     private SetEnemy_BeforeStart() {
@@ -164,11 +171,12 @@ export default class GameControl extends cc.Component {
     public startGame() {
 
         this.GameRunning = true;
-        this.Panel_Hiding.active = false;
         this.Start_Btn.node.active = false;
+        this.Panel_Hiding.active = false;        
         this.Spawn_PlayerHealth();
         this.Sound_Setting.BMG_Sound.play();
     }
+
 
     update(dt) {
 
@@ -257,7 +265,7 @@ export default class GameControl extends cc.Component {
 
         this.Health_Pic = new Array();
         for (let i = 0; i < this.PlayerHealth; i++) {
-            let H_P = cc.instantiate(this.Health_)
+            let H_P = cc.instantiate(this.Health_Prefabs)
             H_P.parent = this.Pos_Health;
         }
     }
@@ -265,7 +273,7 @@ export default class GameControl extends cc.Component {
     private Spawn_Bullect() {
 
         let Bullect_ = cc.instantiate(this.Prefabs_Bullet);
-        this.Sound_Setting.SFX_Sound.play();        
+        this.Sound_Setting.SFX_Sound.play();
         Bullect_.parent = this.Canvas_Node;
         Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);
     }
@@ -305,15 +313,29 @@ export default class GameControl extends cc.Component {
                 this.PlayerHealth = this.PlayerHealth - Damage;
                 this.HitStack = 0;
                 this.ComboHit_Text.node.active = false;
-                this.Pos_Health.children.splice(this.Pos_Health.childrenCount - Damage, Damage);                                            
+
+                this.Destory_Heart_Picture(Damage);
 
                 this.PowerManager.Player_Lost_Buff();
-                //this.ResetBuff_Player();
-                if (this.PlayerHealth <= 0) {                    
+                if (this.PlayerHealth <= 0) {
                     this.GameOver();
                 }
             }
         }
+    }
+
+    Destory_Heart_Picture(CountDes) {        
+
+        let GetPosX = this.Pos_Health.children[this.Pos_Health.childrenCount - 1].x;
+        let GetPosY = this.Pos_Health.y
+
+        let Hp_EFX = cc.instantiate(this.Health_EFX);
+
+        Hp_EFX.parent = this.Canvas_Node;
+        Hp_EFX.setPosition(GetPosX, GetPosY);
+        let Action = cc.sequence(cc.delayTime(0.5), cc.destroySelf());
+        Hp_EFX.runAction(Action);
+        this.Pos_Health.children.splice(this.Pos_Health.childrenCount - CountDes, CountDes);        
     }
 
     private ShowPlus_HP() {
@@ -327,16 +349,15 @@ export default class GameControl extends cc.Component {
 
     public ResetBuff_Player() {
 
-        this.Speed = this.DefVal.St_Speed;
-        this.Fire_Rate = this.DefVal.St_FirRate;
-        //this.PowerManager.Player_Lost_Buff();
+        this.Speed = this.DefVal.Def_Speed;
+        this.Fire_Rate = this.DefVal.Def_FireRate;
     }
 
     public PlayerPlusHealth() {
 
         if (this.PlayerHealth < this.PlayerMaxHealth) {
             this.PlayerHealth += 1;
-            let H_P = cc.instantiate(this.Health_);
+            let H_P = cc.instantiate(this.Health_Prefabs);
             H_P.parent = this.Pos_Health;
         }
     }
@@ -361,7 +382,6 @@ export default class GameControl extends cc.Component {
         let Enemy_ = cc.instantiate(this.Enemy);
         Enemy_.parent = this.Parent_Pos_Enemy;
         Enemy_.setPosition(PosSP);
-
         let EnemyScaleUp = cc.scaleTo(0.5, 1, 1);
         Enemy_.runAction(EnemyScaleUp);
 
@@ -388,20 +408,7 @@ export default class GameControl extends cc.Component {
         Get_GO_Text.runAction(Text_Scale);
     }
 
-    public PlayGameAgain() {
+    public PlayGameAgain() {        
         cc.director.loadScene("ObjMovement");
     }
 }
-
-export class defult_Value {
-
-    public St_Speed = 0;
-    public St_FirRate = 0;
-
-    constructor(StartSpeed, StartFireRate) {
-
-        this.St_Speed = StartSpeed;
-        this.St_FirRate = StartFireRate;
-    }
-}
-

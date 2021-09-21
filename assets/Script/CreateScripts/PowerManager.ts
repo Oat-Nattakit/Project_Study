@@ -159,7 +159,6 @@ export default class PowerManager extends cc.Component {
                 this.St_Fire = true;
             }
             this.GetMainScripts.Fire_Rate -= 0.05;
-
             this.Fire_Count.string = ": " + this.GetMainScripts.Fire_Rate.toFixed(2);
         }
         else if (this.Buff_Number == 3) {
@@ -177,7 +176,7 @@ export default class PowerManager extends cc.Component {
 
         let Parent_PicBuff = this.GetMainScripts.Pos_ShowBuff;
 
-        if (this.GetMainScripts.Fire_Rate < this.GetMainScripts.DefVal.St_FirRate || this.GetMainScripts.Speed > this.GetMainScripts.DefVal.St_Speed) {
+        if (this.GetMainScripts.Fire_Rate < this.GetMainScripts.DefVal.Def_FireRate || this.GetMainScripts.Speed > this.GetMainScripts.DefVal.Def_Speed) {
             Parent_PicBuff.children.splice(0, Parent_PicBuff.childrenCount);            
             this.GetMainScripts.ResetBuff_Player();
             this.St_Fire = false;
@@ -212,8 +211,7 @@ export default class PowerManager extends cc.Component {
     }
 
     Show_Buff_Player(BuffNuber) {
-
-        console.log(BuffNuber);
+                
         let Buff_Pic = cc.instantiate(this.Buff_Picture);
         Buff_Pic.children[BuffNuber].active = true;
         Buff_Pic.parent = this.GetMainScripts.Pos_ShowBuff;

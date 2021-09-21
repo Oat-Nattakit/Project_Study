@@ -96,8 +96,7 @@ export default class Bullet extends cc.Component {
     private Random_Buff_Bullet() {
         let Rate_Buff = [5, 10, 15, 100];
 
-        let RandomBuff = Math.floor(Math.random() * 100);     
-        
+        let RandomBuff = Math.floor(Math.random() * 100);           
         this.Patical_Sy.enabled = true;
 
         if (RandomBuff <= Rate_Buff[0]) {
@@ -131,7 +130,7 @@ export default class Bullet extends cc.Component {
     }
 
     private SpawnEFX() {
-        let EFX_ = cc.instantiate(this.GetMainScripts.EFX);
+        let EFX_ = cc.instantiate(this.GetMainScripts.Boom_EFX);
         EFX_.setParent(this.GetMainScripts.Canvas_Node);
         EFX_.setPosition(this.node.getPosition());
         setTimeout(function () {
