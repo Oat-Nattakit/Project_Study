@@ -119,7 +119,7 @@ export default class GameControl extends cc.Component {
 
         GameControl.Instance = this;
 
-        if(this.DefVal == null){
+        if (this.DefVal == null) {
             this.DefVal = Default_Value_Setting.getInstance();
         }
         if (this.DefVal.Def_Speed == null && this.DefVal.Def_FireRate == null) {
@@ -163,8 +163,8 @@ export default class GameControl extends cc.Component {
 
         for (let i = 0; i < this.MinEnemy; i++) {
             this.RanPositionEnemy();
-        }       
-    }   
+        }
+    }
 
     public startGame() {
 
@@ -265,7 +265,13 @@ export default class GameControl extends cc.Component {
         for (let i = 0; i < this.PlayerHealth; i++) {
             let H_P = cc.instantiate(this.Health_Prefabs)
             H_P.parent = this.Pos_Health;
+            this.PicHealthScaleUp(H_P);
         }
+    }
+
+    private PicHealthScaleUp(NodeRunaction) {
+        let ScaleUp = cc.scaleTo(0.2, 1)
+        NodeRunaction.runAction(ScaleUp);
     }
 
     private Spawn_Bullect() {
@@ -322,18 +328,21 @@ export default class GameControl extends cc.Component {
         }
     }
 
-    Destory_Heart_Picture(CountDes) {
+    private Destory_Heart_Picture(RoundDestory) {
 
-        let GetPosX = this.Pos_Health.children[this.Pos_Health.childrenCount - 1].x;
-        let GetPosY = this.Pos_Health.y
+        for (let i = 0; i < RoundDestory; i++) {
 
-        let Hp_EFX = cc.instantiate(this.Health_EFX);
+            let GetPosX = this.Pos_Health.children[this.Pos_Health.childrenCount - 1].x;
+            let GetPosY = this.Pos_Health.y
 
-        Hp_EFX.parent = this.Canvas_Node;
-        Hp_EFX.setPosition(GetPosX, GetPosY);
-        let Action = cc.sequence(cc.delayTime(0.5), cc.destroySelf());
-        Hp_EFX.runAction(Action);
-        this.Pos_Health.children.splice(this.Pos_Health.childrenCount - CountDes, CountDes);
+            let Hp_EFX = cc.instantiate(this.Health_EFX);
+
+            Hp_EFX.parent = this.Canvas_Node;
+            Hp_EFX.setPosition(GetPosX, GetPosY);
+            let Action = cc.sequence(cc.delayTime(0.5), cc.destroySelf());
+            Hp_EFX.runAction(Action);
+            this.Pos_Health.children.splice(this.Pos_Health.childrenCount - 1, 1);
+        }
     }
 
     private ShowPlus_HP() {
@@ -357,6 +366,7 @@ export default class GameControl extends cc.Component {
             this.PlayerHealth += 1;
             let H_P = cc.instantiate(this.Health_Prefabs);
             H_P.parent = this.Pos_Health;
+            this.PicHealthScaleUp(H_P);
         }
     }
 
@@ -386,11 +396,11 @@ export default class GameControl extends cc.Component {
         this.CountEnemy++;
 
         setTimeout(function () {
-            GameControl.Instance.SetEnemy_IN_Array();          
+            GameControl.Instance.SetEnemy_IN_Array();
         }, 1);
     }
 
-    SetEnemy_IN_Array() {
+    private SetEnemy_IN_Array() {
 
         this.GetPos_.push(this.Parent_Pos_Enemy.children[this.Parent_Pos_Enemy.childrenCount - 1].getPosition())
     }

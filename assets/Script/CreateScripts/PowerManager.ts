@@ -22,7 +22,7 @@ export default class PowerManager extends cc.Component {
     private Buff_Picture: cc.Prefab = null;
 
     private GetMainScripts: GameControl;
-    private DefValue : Default_Value_Setting = null;
+    private DefValue: Default_Value_Setting = null;
 
     private Buff_Obj: cc.Node;
 
@@ -33,14 +33,12 @@ export default class PowerManager extends cc.Component {
 
     private Curve_Time = 0.5;
     private GetTime = 0;
+    private WaitTime_Sp = 0;
 
     private Buff_Number = 0;
     private SpeedBuff = 150;
 
     public Debuff_Number = 0;
-
-    private CountBuffSpeed = 0;
-    private CountBuffFire = 0;
 
     private RangeWidth = 0;
     private RangeHight = 0;
@@ -51,14 +49,16 @@ export default class PowerManager extends cc.Component {
     private St_Speed: Boolean = false;
     private St_Fire: Boolean = false;
 
+    private Spawn_R_Side: Boolean = false;;
+
     onLoad() {
 
         this.GetMainScripts = GameControl.Instance;
-        
-        if(this.DefValue == null){
+
+        if (this.DefValue == null) {
             this.DefValue = Default_Value_Setting.getInstance();
         }
-
+        this.WaitTime_Sp = this.RandomTimeSpawnBuff();
         this.RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
         this.RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;
     }
@@ -69,16 +69,25 @@ export default class PowerManager extends cc.Component {
 
             if (this.Spawn_Buff == false) {
                 this.GetTime += dt;
-                if (this.GetTime >= (Math.floor(Math.random() * 10) + 10)) {
+                if (this.GetTime >= this.WaitTime_Sp) {
                     this.SpawnBuff();
                 }
             }
 
             if (this.Spawn_Buff == true) {
+
                 this.Buff_Obj.x += dt * this.SpeedBuff;
-                if (this.Buff_Obj.x >= (this.GetMainScripts.Canvas_Node.width * 0.7)) {
-                    this.Buff_Obj.destroy();
-                    this.Spawn_Buff = false;
+                let Buff_limitMove = this.GetMainScripts.Canvas_Node.width * 0.7;
+
+                if (this.Spawn_R_Side == true) {
+                    if (this.Buff_Obj.x >= Buff_limitMove) {
+                        this.DestoryBuff_Object();
+                    }
+                }
+                else {
+                    if (this.Buff_Obj.x <= -Buff_limitMove) {
+                        this.DestoryBuff_Object();
+                    }
                 }
             }
         }
@@ -93,9 +102,22 @@ export default class PowerManager extends cc.Component {
 
         this.BuffObject_Movement();
         this.Random_Silde_Buff();
-
-        this.GetTime = 0;
         this.Spawn_Buff = true;
+    }
+
+    private RandomTimeSpawnBuff() {
+        let RandomTime = (Math.floor(Math.random() * 10) + 15);
+        console.log(RandomTime);
+        return RandomTime;
+    }
+
+    private DestoryBuff_Object() {
+
+        this.WaitTime_Sp = this.RandomTimeSpawnBuff();
+        this.GetTime = 0;
+        this.Spawn_Buff = false;
+        this.Spawn_R_Side = false;
+        this.Buff_Obj.destroy();
     }
 
     private RandomBuffPlayer() {
@@ -113,7 +135,7 @@ export default class PowerManager extends cc.Component {
         }
         else if (Random_Value >= this.Random_Rate[2]) {
             this.Buff_Number = 3;
-        }        
+        }
     }
 
     private Random_Silde_Buff() {
@@ -123,14 +145,16 @@ export default class PowerManager extends cc.Component {
         if (Ran_Num == 0) {
             this.Buff_Obj.setPosition(-this.RangeWidth, this.RangeHight);
             this.SpeedBuff = 150;
+            this.Spawn_R_Side = true;
         }
         else {
             this.Buff_Obj.setPosition(this.RangeWidth, this.RangeHight);
             this.SpeedBuff = -150;
+            this.Spawn_R_Side = false;
         }
     }
 
-    BuffObject_Movement() {
+    private BuffObject_Movement() {
 
         let Scale_resize = cc.sequence(cc.scaleTo(0.4, 1.3, 1.3), cc.scaleTo(0.4, 0.8, 0.8)).repeatForever();
         this.Buff_Obj.runAction(Scale_resize);
@@ -144,9 +168,10 @@ export default class PowerManager extends cc.Component {
 
     public Player_Get_Buff() {
 
-        this.Buff_Obj.destroy();
-        this.Spawn_Buff = false;
-        
+        /*this.Buff_Obj.destroy();
+        this.Spawn_Buff = false;*/
+        this.DestoryBuff_Object();
+
         if (this.Buff_Number == 0) {
             this.GetMainScripts.PlayerPlusHealth();
         }
@@ -168,7 +193,7 @@ export default class PowerManager extends cc.Component {
             this.Fire_Count.string = ": " + this.GetMainScripts.Fire_Rate.toFixed(2);
         }
         else if (this.Buff_Number == 3) {
-            
+
             if (this.St_Speed == false) {
                 this.Speed_Count = this.Show_Buff_Player(this.Buff_Number).getComponentInChildren(cc.Label);
                 this.St_Speed = true;
@@ -183,10 +208,10 @@ export default class PowerManager extends cc.Component {
         let Parent_PicBuff = this.GetMainScripts.Pos_ShowBuff;
 
         if (this.GetMainScripts.Fire_Rate < this.DefValue.Def_FireRate || this.GetMainScripts.Speed > this.DefValue.Def_Speed) {
-            Parent_PicBuff.children.splice(0, Parent_PicBuff.childrenCount);            
+            Parent_PicBuff.children.splice(0, Parent_PicBuff.childrenCount);
             this.GetMainScripts.ResetBuff_Player();
             this.St_Fire = false;
-            this.St_Speed = false; 
+            this.St_Speed = false;
         }
 
         if (this.Debuff_Number != 0) {
@@ -217,7 +242,7 @@ export default class PowerManager extends cc.Component {
     }
 
     Show_Buff_Player(BuffNuber) {
-                
+
         let Buff_Pic = cc.instantiate(this.Buff_Picture);
         Buff_Pic.children[BuffNuber].active = true;
         Buff_Pic.parent = this.GetMainScripts.Pos_ShowBuff;

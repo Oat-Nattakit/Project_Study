@@ -94,7 +94,7 @@
       "__uuid__": "d8e7fd6a-f990-45ee-8abe-ca47bbf6ccad"
     },
     "_texture": null,
-    "_stopped": true,
+    "_stopped": false,
     "playOnLoad": true,
     "autoRemoveOnFinish": false,
     "totalParticles": 10,
@@ -147,23 +147,23 @@
     },
     "posVar": {
       "__type__": "cc.Vec2",
-      "x": 5,
-      "y": 15
+      "x": 10,
+      "y": 10
     },
     "_positionType": 1,
     "positionType": 1,
     "emitterMode": 0,
     "gravity": {
       "__type__": "cc.Vec2",
-      "x": 0.25,
-      "y": 0.8600000143051147
+      "x": 0,
+      "y": 0
     },
     "speed": 0,
-    "speedVar": 200,
-    "tangentialAccel": -92.11000061035156,
-    "tangentialAccelVar": 65.79000091552734,
-    "radialAccel": -671.0499877929688,
-    "radialAccelVar": 65.79000091552734,
+    "speedVar": 50,
+    "tangentialAccel": 0,
+    "tangentialAccelVar": 100,
+    "radialAccel": 0,
+    "radialAccelVar": 100,
     "rotationIsDir": false,
     "startRadius": 0,
     "startRadiusVar": 0,
