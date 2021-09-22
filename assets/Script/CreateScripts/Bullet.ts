@@ -87,13 +87,14 @@ export default class Bullet extends cc.Component {
         cc.tween(this.GetMainScripts.Player_Obj)
             .to(0.1, { color: cc.Color.RED })
             .to(0.1, { color: cc.Color.WHITE })
-            .start();
+            .start();               
 
         this.Enemy_Buff_Bullet();
         this.GetMainScripts.Hit_and_GetHit_Ststus(false, this.Damage);
     }
 
     private Random_Buff_Bullet() {
+
         let Rate_Buff = [5, 10, 15, 100];
 
         let RandomBuff = Math.floor(Math.random() * 100);           
@@ -130,11 +131,12 @@ export default class Bullet extends cc.Component {
     }
 
     private SpawnEFX() {
+
         let EFX_ = cc.instantiate(this.GetMainScripts.Boom_EFX);
         EFX_.setParent(this.GetMainScripts.Canvas_Node);
         EFX_.setPosition(this.node.getPosition());
-        setTimeout(function () {
-            EFX_.destroy()
-        }.bind(this), 100);
+
+        let EFX_Action = cc.sequence(cc.delayTime(0.1),cc.destroySelf());
+        EFX_.runAction(EFX_Action);       
     }
 }

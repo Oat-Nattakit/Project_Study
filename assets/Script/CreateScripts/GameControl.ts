@@ -70,7 +70,7 @@ export default class GameControl extends cc.Component {
     private Plus_HP: cc.Prefab = null;
 
     public PowerManager: PowerManager;
-    public DefVal: Default_Value_Setting = Default_Value_Setting.getInstance();
+    public DefVal: Default_Value_Setting = null;
     private Sound_Setting: Sound_Setting;
 
     @property
@@ -119,6 +119,9 @@ export default class GameControl extends cc.Component {
 
         GameControl.Instance = this;
 
+        if(this.DefVal == null){
+            this.DefVal = Default_Value_Setting.getInstance();
+        }
         if (this.DefVal.Def_Speed == null && this.DefVal.Def_FireRate == null) {
             this.DefVal.Player_Def_Value(this.Speed, this.Fire_Rate);
         }
@@ -146,33 +149,28 @@ export default class GameControl extends cc.Component {
         }
         setTimeout(function () {
             GameControl.Instance.ColletPosition();
-        }, 10);        
+        }, 10);
     }
 
-    ColletPosition() {       
-        
+    ColletPosition() {
+
         for (let i = 0; i < this.Parent_Pos_Enemy.childrenCount; i++) {
-            this.EN_SpawnPos.push(this.Parent_Pos_Enemy.children[i].getPosition());           
+            this.EN_SpawnPos.push(this.Parent_Pos_Enemy.children[i].getPosition());
         }
 
-        this.Parent_Pos_Enemy.destroyAllChildren();        
+        this.Parent_Pos_Enemy.destroyAllChildren();
         this.Parent_Pos_Enemy.getComponent(cc.Layout).enabled = false;
-        
-        this.SetEnemy_BeforeStart();        
-    }
-
-    private SetEnemy_BeforeStart() {
 
         for (let i = 0; i < this.MinEnemy; i++) {
             this.RanPositionEnemy();
-        }
-    }
+        }       
+    }   
 
     public startGame() {
 
         this.GameRunning = true;
         this.Start_Btn.node.active = false;
-        this.Panel_Hiding.active = false;        
+        this.Panel_Hiding.active = false;
         this.Spawn_PlayerHealth();
         this.Sound_Setting.BMG_Sound.play();
     }
@@ -324,7 +322,7 @@ export default class GameControl extends cc.Component {
         }
     }
 
-    Destory_Heart_Picture(CountDes) {        
+    Destory_Heart_Picture(CountDes) {
 
         let GetPosX = this.Pos_Health.children[this.Pos_Health.childrenCount - 1].x;
         let GetPosY = this.Pos_Health.y
@@ -335,7 +333,7 @@ export default class GameControl extends cc.Component {
         Hp_EFX.setPosition(GetPosX, GetPosY);
         let Action = cc.sequence(cc.delayTime(0.5), cc.destroySelf());
         Hp_EFX.runAction(Action);
-        this.Pos_Health.children.splice(this.Pos_Health.childrenCount - CountDes, CountDes);        
+        this.Pos_Health.children.splice(this.Pos_Health.childrenCount - CountDes, CountDes);
     }
 
     private ShowPlus_HP() {
@@ -365,8 +363,8 @@ export default class GameControl extends cc.Component {
     public GetPosition_StandbyPush(PositionNode: cc.Vec2) {
 
         setTimeout(function () {
-            this.EN_SpawnPos.push(PositionNode);
-        }.bind(this), 10);
+            GameControl.Instance.EN_SpawnPos.push(PositionNode);
+        }, 10);
     }
 
     private RanPositionEnemy() {
@@ -388,8 +386,8 @@ export default class GameControl extends cc.Component {
         this.CountEnemy++;
 
         setTimeout(function () {
-            this.SetEnemy_IN_Array();
-        }.bind(this), 0.1);
+            GameControl.Instance.SetEnemy_IN_Array();          
+        }, 1);
     }
 
     SetEnemy_IN_Array() {
@@ -408,7 +406,7 @@ export default class GameControl extends cc.Component {
         Get_GO_Text.runAction(Text_Scale);
     }
 
-    public PlayGameAgain() {        
+    public PlayGameAgain() {
         cc.director.loadScene("ObjMovement");
     }
 }

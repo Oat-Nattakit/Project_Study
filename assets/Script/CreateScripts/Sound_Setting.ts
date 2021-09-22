@@ -27,10 +27,14 @@ export default class Sound_Setting extends cc.Component {
     private Mute_BMG_ST: Boolean = false;
     private Mute_SFX_ST: Boolean = false;
 
-    private GetDef: Default_Value_Setting = Default_Value_Setting.getInstance();
+    private GetDef: Default_Value_Setting = null;
 
     onLoad() {        
         
+        if(this.GetDef == null){
+            this.GetDef = Default_Value_Setting.getInstance();
+        }
+
         this.BMG_Button.node.on('click', this.Mute_BMG, this);
         this.SFX_Button.node.on('click', this.Mute_SFX, this);
 
@@ -49,13 +53,13 @@ export default class Sound_Setting extends cc.Component {
 
             this.BMG_Sound.volume = 0;
             this.BMG_Button.normalColor = cc.Color.RED;
-            this.Mute_BMG_ST = this.GetDef.Sound_Def_BGM(true);
+            this.Mute_BMG_ST = this.GetDef.Set_Sound_Def_BGM(true);
         }
         else {
 
             this.BMG_Sound.volume = 0.1;
             this.BMG_Button.normalColor = cc.Color.GREEN;
-            this.Mute_BMG_ST = this.GetDef.Sound_Def_BGM(false);
+            this.Mute_BMG_ST = this.GetDef.Set_Sound_Def_BGM(false);
         }
         this.BMG_Button.hoverColor = this.BMG_Button.normalColor;        
     }
@@ -66,13 +70,13 @@ export default class Sound_Setting extends cc.Component {
 
             this.SFX_Sound.volume = 0;
             this.SFX_Button.normalColor = cc.Color.RED;            
-            this.Mute_SFX_ST = this.GetDef.Sound_Def_SFX(true);
+            this.Mute_SFX_ST = this.GetDef.Set_Sound_Def_SFX(true);
         }
         else {
 
             this.SFX_Sound.volume = 1;
             this.SFX_Button.normalColor = cc.Color.GREEN;            
-            this.Mute_SFX_ST = this.GetDef.Sound_Def_SFX(false);
+            this.Mute_SFX_ST = this.GetDef.Set_Sound_Def_SFX(false);
         }
         this.SFX_Button.hoverColor = this.SFX_Button.normalColor;        
     }

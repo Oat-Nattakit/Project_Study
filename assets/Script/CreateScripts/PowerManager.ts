@@ -5,6 +5,7 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import { Default_Value_Setting } from "./Default_Value_Setting";
 import GameControl from "./GameControl";
 const { ccclass, property } = cc._decorator;
 
@@ -21,6 +22,7 @@ export default class PowerManager extends cc.Component {
     private Buff_Picture: cc.Prefab = null;
 
     private GetMainScripts: GameControl;
+    private DefValue : Default_Value_Setting = null;
 
     private Buff_Obj: cc.Node;
 
@@ -52,6 +54,10 @@ export default class PowerManager extends cc.Component {
     onLoad() {
 
         this.GetMainScripts = GameControl.Instance;
+        
+        if(this.DefValue == null){
+            this.DefValue = Default_Value_Setting.getInstance();
+        }
 
         this.RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
         this.RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;
@@ -176,7 +182,7 @@ export default class PowerManager extends cc.Component {
 
         let Parent_PicBuff = this.GetMainScripts.Pos_ShowBuff;
 
-        if (this.GetMainScripts.Fire_Rate < this.GetMainScripts.DefVal.Def_FireRate || this.GetMainScripts.Speed > this.GetMainScripts.DefVal.Def_Speed) {
+        if (this.GetMainScripts.Fire_Rate < this.DefValue.Def_FireRate || this.GetMainScripts.Speed > this.DefValue.Def_Speed) {
             Parent_PicBuff.children.splice(0, Parent_PicBuff.childrenCount);            
             this.GetMainScripts.ResetBuff_Player();
             this.St_Fire = false;

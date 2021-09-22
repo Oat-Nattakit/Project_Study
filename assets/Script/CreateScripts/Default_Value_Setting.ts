@@ -18,7 +18,7 @@ export class Default_Value_Setting {
     public Def_BMG: Boolean = null;
     public Def_SFX: Boolean = null;
 
-    constructor() {        
+    constructor() {
         Default_Value_Setting._instance = this;
     }
 
@@ -31,12 +31,12 @@ export class Default_Value_Setting {
         this.Def_FireRate = St_Firerate;
     }
 
-    public Sound_Def_BGM(BMG_Vol: Boolean) {
+    public Set_Sound_Def_BGM(BMG_Vol: Boolean) {
         this.Def_BMG = BMG_Vol;
         return this.Def_BMG;
 
     }
-    public Sound_Def_SFX(SFX_Vol: Boolean) {
+    public Set_Sound_Def_SFX(SFX_Vol: Boolean) {
         this.Def_SFX = SFX_Vol;
         return this.Def_SFX;
     }
