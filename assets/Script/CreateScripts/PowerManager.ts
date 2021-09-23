@@ -108,12 +108,12 @@ export default class PowerManager extends cc.Component {
 
     private RandomTimeSpawnBuff() {
         let RandomTime = (Math.floor(Math.random() * 10) + 15);
-        return RandomTime;
+        return 5;
     }
 
     private SpawnBuff() {
 
-        this.Buff_Number = this.BUFF.RandomBuffPlayer();
+        this.Buff_Number = this.BUFF.RandomBuffPlayer(this.GetMainScripts.Check_MaxHP());        
 
         this.Buff_Obj = cc.instantiate(this.BuffPrefabs);
         this.Buff_Obj.children[this.Buff_Number].active = true;
@@ -260,12 +260,17 @@ class BUFF_Manager {
         this.RangeHight = Hight;
     }
 
-    public RandomBuffPlayer() {
+    public RandomBuffPlayer(HP_Max) {
 
         let Random_Rate = [10, 20, 60, 100];
         let Random_Value = Math.floor(Math.random() * 100);
         let Buff_Number = 0;
+        
 
+        if(HP_Max == true){            
+            Random_Value += Random_Rate[0];
+        }       
+        
         if (Random_Value <= Random_Rate[0]) {
             Buff_Number = 0;
         }

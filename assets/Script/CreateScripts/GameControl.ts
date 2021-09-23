@@ -80,7 +80,10 @@ export default class GameControl extends cc.Component {
     public Fire_Rate = 1;
 
     @property
-    public PlayerHealth = 3;
+    private Enamy_FireRate = 1.5;
+
+    @property
+    private PlayerHealth = 3;
 
     @property
     private PlayerMaxHealth = 0;
@@ -111,7 +114,7 @@ export default class GameControl extends cc.Component {
     private Rate_SpawnEnemy = 0.6;
 
     private CountFireEN = 0;
-    private Enamy_FireRate = 1.5;
+
     private LimitMove = 0;
     private CountTimePlay = 0;
 
@@ -218,7 +221,7 @@ export default class GameControl extends cc.Component {
             }
 
             this.CountTimePlay += dt;
-            if (this.CountTimePlay >= 30 && this.Enamy_FireRate >= 0.2) {
+            if (this.CountTimePlay >= 20 && this.Enamy_FireRate >= 0.2) {                
                 this.Enamy_FireRate -= 0.1;
                 this.CountTimePlay = 0;
             }
@@ -303,7 +306,7 @@ export default class GameControl extends cc.Component {
             this.HitStack += 1;
             this.ComboHit_Text.node.active = true;
             this.ComboHit_Text.string = "HIT : " + this.HitStack.toString();
-            if (this.HitStack % 50 == 0) {
+            if (this.HitStack % 50 == 0 && this.Check_MaxHP() == false) {
                 this.PlayerPlusHealth();
                 this.ShowPlus_HP();
             }
@@ -331,8 +334,8 @@ export default class GameControl extends cc.Component {
     private Destory_Heart_Picture(RoundDestory) {
 
         let Current_Pic = this.Pos_Health.childrenCount;
-        if(Current_Pic - RoundDestory < 0){
-           RoundDestory = Current_Pic;
+        if (Current_Pic - RoundDestory < 0) {
+            RoundDestory = Current_Pic;
         }
 
         for (let i = 0; i < RoundDestory; i++) {
@@ -368,12 +371,24 @@ export default class GameControl extends cc.Component {
 
     public PlayerPlusHealth() {
 
-        if (this.PlayerHealth < this.PlayerMaxHealth) {
+        let MaxHP = this.Check_MaxHP();
+
+        if (MaxHP == false) {
+
             this.PlayerHealth += 1;
             let H_P = cc.instantiate(this.Health_Prefabs);
             H_P.parent = this.Pos_Health;
             this.PicHealthScaleUp(H_P);
         }
+    }
+
+    public Check_MaxHP() {
+
+        let Status = false;
+        if (this.PlayerHealth == this.PlayerMaxHealth) {
+            Status = true;
+        }
+        return Status;
     }
 
     public GetPosition_StandbyPush(PositionNode: cc.Vec2) {
