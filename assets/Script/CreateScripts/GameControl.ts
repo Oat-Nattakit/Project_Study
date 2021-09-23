@@ -86,7 +86,7 @@ export default class GameControl extends cc.Component {
     private PlayerHealth = 3;
 
     @property
-    private PlayerMaxHealth = 0;
+    private PlayerMaxHealth = 5;
 
     @property
     private MinEnemy = 20;
