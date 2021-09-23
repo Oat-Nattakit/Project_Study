@@ -155,8 +155,8 @@ export default class PowerManager extends cc.Component {
                 this.Fire_Count = this.Show_Buff_Player(this.Buff_Number).getComponentInChildren(cc.Label);
                 this.St_Fire = true;
             }
-            this.GetMainScripts.Fire_Rate -= 0.05;
-            this.Fire_Count.string = ": " + this.GetMainScripts.Fire_Rate.toFixed(2);
+            this.GetMainScripts.Fire_Rate -= 0.05;            
+            this.Current_Firerate();
         }
         else if (this.Buff_Number == 3) {
 
@@ -164,10 +164,10 @@ export default class PowerManager extends cc.Component {
                 this.Speed_Count = this.Show_Buff_Player(this.Buff_Number).getComponentInChildren(cc.Label);
                 this.St_Speed = true;
             }
-            this.GetMainScripts.Speed += 100;
-            this.Speed_Count.string = ": " + (this.GetMainScripts.Speed) / 100;
+            this.GetMainScripts.Speed += 100;            
+            this.Current_Speed();
         }
-    }
+    }    
 
     public Player_Lost_Buff() {
 
@@ -194,7 +194,8 @@ export default class PowerManager extends cc.Component {
                 this.St_Fire = true;
             }
             this.GetMainScripts.Fire_Rate += 0.05;
-            this.Fire_Count.string = ": " + this.GetMainScripts.Fire_Rate.toFixed(2);
+            
+            this.Current_Firerate();
         }
         else if (this.Debuff_Number == 3) {
 
@@ -202,8 +203,27 @@ export default class PowerManager extends cc.Component {
                 this.Speed_Count = this.Show_Buff_Player(this.Debuff_Number).getComponentInChildren(cc.Label);
                 this.St_Speed = true;
             }
-            this.GetMainScripts.Speed -= 50;
-            this.Speed_Count.string = ": " + (this.GetMainScripts.Speed) / 100;
+            this.GetMainScripts.Speed -= 50;            
+            this.Current_Speed();
+        }
+    }
+
+    private Current_Speed(){
+
+        if(this.GetMainScripts.Speed >= this.DefValue.Def_Speed){
+            this.Speed_Count.string = ": Up";
+        }
+        else if(this.GetMainScripts.Speed < this.DefValue.Def_Speed){
+            this.Speed_Count.string = ": Down";
+        }
+    }
+
+    private Current_Firerate(){
+        if(this.GetMainScripts.Fire_Rate <= this.DefValue.Def_FireRate){
+            this.Fire_Count.string = ": Up";
+        }
+        else if(this.GetMainScripts.Fire_Rate > this.DefValue.Def_FireRate){
+            this.Fire_Count.string = ": Down";
         }
     }
 
@@ -307,7 +327,8 @@ export class DEBUFF_Manager{
         let Rate_Buff = [5, 10, 15, 100];
         let DeBuff_Type = 0;
 
-        let RandomBuff = Math.floor(Math.random() * 100);           
+        let RandomBuff = Math.floor(Math.random() * 100);
+                
         Patical_Sy.enabled = true;
 
         if (RandomBuff <= Rate_Buff[0]) {

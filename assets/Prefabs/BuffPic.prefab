@@ -531,7 +531,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
+      "width": 120,
       "height": 63
     },
     "_anchorPoint": {
@@ -583,8 +583,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": ": 100",
-    "_N$string": ": 100",
+    "_string": ": Down",
+    "_N$string": ": Down",
     "_fontSize": 50,
     "_lineHeight": 50,
     "_enableWrapText": true,
@@ -817,7 +817,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
+      "width": 120,
       "height": 63
     },
     "_anchorPoint": {

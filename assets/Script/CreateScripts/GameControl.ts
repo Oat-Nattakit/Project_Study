@@ -330,6 +330,11 @@ export default class GameControl extends cc.Component {
 
     private Destory_Heart_Picture(RoundDestory) {
 
+        let Current_Pic = this.Pos_Health.childrenCount;
+        if(Current_Pic - RoundDestory < 0){
+           RoundDestory = Current_Pic;
+        }
+
         for (let i = 0; i < RoundDestory; i++) {
 
             let GetPosX = this.Pos_Health.children[this.Pos_Health.childrenCount - 1].x;
@@ -343,6 +348,7 @@ export default class GameControl extends cc.Component {
             Hp_EFX.runAction(Action);
             this.Pos_Health.children.splice(this.Pos_Health.childrenCount - 1, 1);
         }
+
     }
 
     private ShowPlus_HP() {
