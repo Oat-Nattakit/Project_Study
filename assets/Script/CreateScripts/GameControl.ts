@@ -361,13 +361,7 @@ export default class GameControl extends cc.Component {
         AddHP.setPosition(0, 20);
         let movetment = cc.sequence(cc.moveBy(0.5, 0, AddHP.y + 40), cc.destroySelf());
         AddHP.runAction(movetment);
-    }
-
-    /*public ResetBuff_Player() {
-
-        this.Speed = this.DefVal.Def_Speed;
-        this.Fire_Rate = this.DefVal.Def_FireRate;
-    }*/
+    }    
 
     public PlayerPlusHealth() {
 
