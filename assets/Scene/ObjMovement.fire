@@ -992,7 +992,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": -25,
+      "width": -30,
       "height": 100
     },
     "_anchorPoint": {
@@ -1066,7 +1066,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": -25,
+      "width": -30,
       "height": 100
     },
     "_resize": 1,
@@ -1081,7 +1081,7 @@
     "_N$paddingRight": 0,
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,
-    "_N$spacingX": 25,
+    "_N$spacingX": 30,
     "_N$spacingY": 50,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
@@ -3368,6 +3368,7 @@
     },
     "Speed": 500,
     "Fire_Rate": 0.5,
+    "Enamy_FireRate": 1.5,
     "PlayerHealth": 3,
     "PlayerMaxHealth": 5,
     "MinEnemy": 20,

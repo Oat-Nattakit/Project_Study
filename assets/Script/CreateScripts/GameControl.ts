@@ -363,11 +363,11 @@ export default class GameControl extends cc.Component {
         AddHP.runAction(movetment);
     }
 
-    public ResetBuff_Player() {
+    /*public ResetBuff_Player() {
 
         this.Speed = this.DefVal.Def_Speed;
         this.Fire_Rate = this.DefVal.Def_FireRate;
-    }
+    }*/
 
     public PlayerPlusHealth() {
 

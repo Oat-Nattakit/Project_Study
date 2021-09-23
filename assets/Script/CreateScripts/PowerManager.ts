@@ -24,7 +24,7 @@ export default class PowerManager extends cc.Component {
     private GetMainScripts: GameControl;
     private DefValue: Default_Value_Setting = null;
     private BUFF: BUFF_Manager = null;
-    private DEBUFF : DEBUFF_Manager = null;
+    private DEBUFF: DEBUFF_Manager = null;
 
     private Buff_Obj: cc.Node;
 
@@ -40,7 +40,7 @@ export default class PowerManager extends cc.Component {
     private Buff_Number = 0;
     private SpeedBuff = 150;
 
-    public Debuff_Number = 0; 
+    public Debuff_Number = 0;
 
     private St_Speed: Boolean = false;
     private St_Fire: Boolean = false;
@@ -59,7 +59,7 @@ export default class PowerManager extends cc.Component {
             this.BUFF = BUFF_Manager.Buff_Inst();
         }
 
-        if(this.DEBUFF == null){
+        if (this.DEBUFF == null) {
             this.DEBUFF = DEBUFF_Manager.Debuff_Inst();
         }
 
@@ -68,7 +68,7 @@ export default class PowerManager extends cc.Component {
 
         let RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
         let RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;
-        this.BUFF.SetRange(RangeWidth,RangeHight);
+        this.BUFF.SetRange(RangeWidth, RangeHight);
     }
 
     update(dt) {
@@ -83,7 +83,7 @@ export default class PowerManager extends cc.Component {
             }
 
             if (this.Spawn_Buff == true) {
-                
+
                 let Buff_limitMove = this.GetMainScripts.Canvas_Node.width * 0.7;
 
                 if (this.Spawn_R_Side == true) {
@@ -98,7 +98,7 @@ export default class PowerManager extends cc.Component {
 
                     this.Buff_Obj.x -= dt * this.SpeedBuff;
 
-                    if (this.Buff_Obj.x <= -Buff_limitMove) {                        
+                    if (this.Buff_Obj.x <= -Buff_limitMove) {
                         this.DestoryBuff_Object();
                     }
                 }
@@ -107,13 +107,15 @@ export default class PowerManager extends cc.Component {
     }
 
     private RandomTimeSpawnBuff() {
-        let RandomTime = (Math.floor(Math.random() * 10) + 15);
-        return 5;
+        let RandomTime = (Math.floor(Math.random() * 10) + 10);
+        return RandomTime;
     }
 
     private SpawnBuff() {
 
-        this.Buff_Number = this.BUFF.RandomBuffPlayer(this.GetMainScripts.Check_MaxHP());        
+        let HP_Max = this.GetMainScripts.Check_MaxHP();
+        let Shild_Active = this.GetMainScripts.BuffShild;
+        this.Buff_Number = this.BUFF.RandomBuffPlayer(HP_Max, Shild_Active);
 
         this.Buff_Obj = cc.instantiate(this.BuffPrefabs);
         this.Buff_Obj.children[this.Buff_Number].active = true;
@@ -132,7 +134,7 @@ export default class PowerManager extends cc.Component {
         this.Spawn_Buff = false;
         this.Spawn_R_Side = false;
         this.Buff_Obj.destroy();
-    }    
+    }
 
     public Player_Get_Buff() {
 
@@ -155,7 +157,7 @@ export default class PowerManager extends cc.Component {
                 this.Fire_Count = this.Show_Buff_Player(this.Buff_Number).getComponentInChildren(cc.Label);
                 this.St_Fire = true;
             }
-            this.GetMainScripts.Fire_Rate -= 0.05;            
+            this.GetMainScripts.Fire_Rate -= 0.05;
             this.Current_Firerate();
         }
         else if (this.Buff_Number == 3) {
@@ -164,20 +166,18 @@ export default class PowerManager extends cc.Component {
                 this.Speed_Count = this.Show_Buff_Player(this.Buff_Number).getComponentInChildren(cc.Label);
                 this.St_Speed = true;
             }
-            this.GetMainScripts.Speed += 100;            
+            this.GetMainScripts.Speed += 100;
             this.Current_Speed();
         }
-    }    
+    }
 
     public Player_Lost_Buff() {
 
-        let Parent_PicBuff = this.GetMainScripts.Pos_ShowBuff;
-
-        if (this.GetMainScripts.Fire_Rate < this.DefValue.Def_FireRate || this.GetMainScripts.Speed > this.DefValue.Def_Speed) {
-            Parent_PicBuff.children.splice(0, Parent_PicBuff.childrenCount);
-            this.GetMainScripts.ResetBuff_Player();
-            this.St_Fire = false;
-            this.St_Speed = false;
+        if (this.GetMainScripts.Fire_Rate < this.DefValue.Def_FireRate) {
+            this.Reset_Firerate();
+        }
+        if (this.GetMainScripts.Speed > this.DefValue.Def_Speed) {
+            this.Reset_Speed();
         }
 
         if (this.Debuff_Number != 0) {
@@ -185,8 +185,24 @@ export default class PowerManager extends cc.Component {
         }
     }
 
+    private Reset_Speed() {
+
+        let GetParestText = this.Speed_Count.node.getParent();
+        GetParestText.getParent().destroy();
+        this.GetMainScripts.Speed = this.DefValue.Def_Speed;
+        this.St_Speed = false;
+    }
+
+    private Reset_Firerate() {
+
+        let GetParestText = this.Fire_Count.node.getParent();
+        GetParestText.getParent().destroy();
+        this.GetMainScripts.Fire_Rate = this.DefValue.Def_FireRate
+        this.St_Fire = false;
+    }
+
     private Player_Get_Debuff() {
-        
+
         if (this.Debuff_Number == 2) {
 
             if (this.St_Fire == false) {
@@ -194,7 +210,7 @@ export default class PowerManager extends cc.Component {
                 this.St_Fire = true;
             }
             this.GetMainScripts.Fire_Rate += 0.05;
-            
+
             this.Current_Firerate();
         }
         else if (this.Debuff_Number == 3) {
@@ -203,28 +219,36 @@ export default class PowerManager extends cc.Component {
                 this.Speed_Count = this.Show_Buff_Player(this.Debuff_Number).getComponentInChildren(cc.Label);
                 this.St_Speed = true;
             }
-            this.GetMainScripts.Speed -= 50;            
+            this.GetMainScripts.Speed -= 50;
             this.Current_Speed();
         }
     }
 
-    private Current_Speed(){
+    private Current_Speed() {
 
-        if(this.GetMainScripts.Speed >= this.DefValue.Def_Speed){
+        if (this.GetMainScripts.Speed > this.DefValue.Def_Speed) {
             this.Speed_Count.string = ": Up";
         }
-        else if(this.GetMainScripts.Speed < this.DefValue.Def_Speed){
+        else if (this.GetMainScripts.Speed < this.DefValue.Def_Speed) {
             this.Speed_Count.string = ": Down";
+        }
+        else {
+            this.Reset_Speed();
         }
     }
 
-    private Current_Firerate(){
-        if(this.GetMainScripts.Fire_Rate <= this.DefValue.Def_FireRate){
+    private Current_Firerate() {
+
+        if (this.GetMainScripts.Fire_Rate < this.DefValue.Def_FireRate) {
             this.Fire_Count.string = ": Up";
         }
-        else if(this.GetMainScripts.Fire_Rate > this.DefValue.Def_FireRate){
+        else if (this.GetMainScripts.Fire_Rate > this.DefValue.Def_FireRate) {
             this.Fire_Count.string = ": Down";
         }
+        else {
+            this.Reset_Firerate();
+        }
+
     }
 
     private Show_Buff_Player(BuffNuber) {
@@ -254,27 +278,33 @@ class BUFF_Manager {
     private RangeWidth = 0;
     private RangeHight = 0;
 
-    public SetRange(Width,Hight){
+    public SetRange(Width, Hight) {
 
         this.RangeWidth = Width;
         this.RangeHight = Hight;
     }
 
-    public RandomBuffPlayer(HP_Max) {
+    public RandomBuffPlayer(HP_Max, Shild) {
 
-        let Random_Rate = [10, 20, 60, 100];
+        let Random_Rate = [10, 20, 60];
+
+        if (HP_Max == true) {
+            Random_Rate[1] = Random_Rate[1] - Random_Rate[0];
+            Random_Rate[2] = Random_Rate[2] - Random_Rate[0];
+            Random_Rate[0] = -1;
+        }
+        if (Shild == true) {
+            Random_Rate[2] = Random_Rate[2] - Random_Rate[1];
+            Random_Rate[1] = -1;
+        }
+
         let Random_Value = Math.floor(Math.random() * 100);
         let Buff_Number = 0;
-        
 
-        if(HP_Max == true){            
-            Random_Value += Random_Rate[0];
-        }       
-        
-        if (Random_Value <= Random_Rate[0]) {
+        if (Random_Value > 0 && Random_Value <= Random_Rate[0]) {
             Buff_Number = 0;
         }
-        else if (Random_Value > Random_Rate[0] && Random_Value <= Random_Rate[1]) {
+        else if (Random_Value > 0 && Random_Value > Random_Rate[0] && Random_Value <= Random_Rate[1]) {
             Buff_Number = 1;
         }
         else if (Random_Value > Random_Rate[1] && Random_Value <= Random_Rate[2]) {
@@ -290,13 +320,13 @@ class BUFF_Manager {
 
         let Ran_Num = Math.floor(Math.random() * 2);
         let Spawn_R_Side = false;
-        
+
         if (Ran_Num == 0) {
-            BUFF_OBJ.setPosition(-this.RangeWidth, this.RangeHight);            
+            BUFF_OBJ.setPosition(-this.RangeWidth, this.RangeHight);
             Spawn_R_Side = true;
         }
         else {
-            BUFF_OBJ.setPosition(this.RangeWidth, this.RangeHight);            
+            BUFF_OBJ.setPosition(this.RangeWidth, this.RangeHight);
             Spawn_R_Side = false;
         }
         return Spawn_R_Side;
@@ -315,25 +345,25 @@ class BUFF_Manager {
     }
 }
 
-export class DEBUFF_Manager{
+export class DEBUFF_Manager {
 
-    private static DEBUFF_PLAYER : DEBUFF_Manager = new DEBUFF_Manager();
-    
-    constructor(){
+    private static DEBUFF_PLAYER: DEBUFF_Manager = new DEBUFF_Manager();
+
+    constructor() {
         DEBUFF_Manager.DEBUFF_PLAYER = this;
     }
 
-    public static Debuff_Inst(): DEBUFF_Manager{
+    public static Debuff_Inst(): DEBUFF_Manager {
         return DEBUFF_Manager.DEBUFF_PLAYER;
     }
 
-    public Random_Buff_Bullet(Patical_Sy : cc.ParticleSystem,SpritePic : cc.Node) {
+    public Random_Buff_Bullet(Patical_Sy: cc.ParticleSystem, SpritePic: cc.Node) {
 
         let Rate_Buff = [5, 10, 15, 100];
         let DeBuff_Type = 0;
 
         let RandomBuff = Math.floor(Math.random() * 100);
-                
+
         Patical_Sy.enabled = true;
 
         if (RandomBuff <= Rate_Buff[0]) {
@@ -348,10 +378,10 @@ export class DEBUFF_Manager{
             SpritePic.color = cc.Color.MAGENTA;
             DeBuff_Type = 3;
         }
-        else {            
+        else {
             Patical_Sy.enabled = false;
             SpritePic.color = cc.Color.RED;
-        }    
-        return DeBuff_Type;     
-    }    
+        }
+        return DeBuff_Type;
+    }
 }
