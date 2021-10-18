@@ -71,7 +71,7 @@ export default class GameControl extends cc.Component {
 
     public PowerManager: PowerManager;
     public DefVal: Default_Value_Setting = null;
-    private Sound_Setting: Sound_Setting;
+    public Sound_Setting: Sound_Setting;
 
     @property
     public Speed = 0;
@@ -196,13 +196,13 @@ export default class GameControl extends cc.Component {
                 }
             }*/
 
-            if (this.SpawnBullect == true) {
+            /*if (this.SpawnBullect == true) {
                 this.CountTime += dt;
                 if (this.CountTime >= this.Fire_Rate) {
                     this.Spawn_Bullect();
                     this.CountTime = 0;
                 }
-            }
+            }*/
 
             this.CountTime_SpEnemy += dt;
             let Case_EnemyMorethan_20 = (this.CountEnemy >= 20 && this.CountEnemy < this.MaxEnemy && this.CountTime_SpEnemy >= this.Rate_SpawnEnemy);
@@ -239,9 +239,9 @@ export default class GameControl extends cc.Component {
                 this.Left = true;
                 break;
 */
-            case cc.macro.KEY.space:
+            /*case cc.macro.KEY.space:
                 this.SpawnBullect = true;
-                break;
+                break;*/
 
         }
     }
@@ -256,9 +256,9 @@ export default class GameControl extends cc.Component {
                 this.Left = false;
                 break;
 */
-            case cc.macro.KEY.space:
+            /*case cc.macro.KEY.space:
                 this.SpawnBullect = false;
-                break;
+                break;*/
         }
     }
 

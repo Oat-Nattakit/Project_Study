@@ -14,7 +14,10 @@ export default class Player_Manager extends cc.Component {
 
     private Right: boolean;
     private Left: boolean;
+    private SpawnBullect : boolean;
+
     private LimitMove = 0;
+    private CountTime = 0;
 
     private Player_Obj: cc.Node;
 
@@ -37,11 +40,20 @@ export default class Player_Manager extends cc.Component {
         if (this.GameControl.GameRunning == true) {
 
             this.Player_Movement(dt);
+
+            if (this.SpawnBullect == true) {
+                this.CountTime += dt;
+                if (this.CountTime >= this.GameControl.Fire_Rate) {
+                    this.Spawn_Bullect();
+                    this.CountTime = 0;
+                }
+            }
         }
     }
 
 
     private Player_Movement(dt) {
+
         if (this.Right == true) {
             let LimitRight = (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * 0.3)
             if (LimitRight) {
@@ -56,6 +68,14 @@ export default class Player_Manager extends cc.Component {
         }
     }
 
+    private Spawn_Bullect() {
+
+        let Bullect_ = cc.instantiate(this.GameControl.Prefabs_Bullet);
+        this.GameControl.Sound_Setting.SFX_Sound.play();
+        Bullect_.parent = this.GameControl.Canvas_Node;
+        Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);
+    }
+
     private onKeyDown(event) {
 
         switch (event.keyCode) {
@@ -67,9 +87,9 @@ export default class Player_Manager extends cc.Component {
                 this.Left = true;
                 break;
 
-            /*case cc.macro.KEY.space:
+            case cc.macro.KEY.space:
                 this.SpawnBullect = true;
-                break;*/
+                break;
 
         }
     }
@@ -84,9 +104,9 @@ export default class Player_Manager extends cc.Component {
                 this.Left = false;
                 break;
 
-            /*case cc.macro.KEY.space:
+            case cc.macro.KEY.space:
                 this.SpawnBullect = false;
-                break;*/
+                break;
         }
     }
 }
