@@ -101,8 +101,8 @@ export default class GameControl extends cc.Component {
     public GameRunning: boolean;
     public BuffShild: boolean = false;
 
-    private Right: boolean;
-    private Left: boolean;
+    /*private Right: boolean;
+    private Left: boolean;*/
     private SpawnBullect: boolean;
 
     private CountTime = 0;
@@ -115,7 +115,7 @@ export default class GameControl extends cc.Component {
 
     private CountFireEN = 0;
 
-    private LimitMove = 0;
+    //private LimitMove = 0;
     private CountTimePlay = 0;
 
     onLoad() {
@@ -136,7 +136,7 @@ export default class GameControl extends cc.Component {
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
         this.GetPos_ = new Array();
-        this.LimitMove = this.Canvas_Node.getComponent(cc.Canvas).designResolution.width;
+        //this.LimitMove = this.Canvas_Node.getComponent(cc.Canvas).designResolution.width;
         this.GetCurrentPos_OnScene();
 
         this.Start_Btn.node.on('click', this.startGame, this);
@@ -183,7 +183,7 @@ export default class GameControl extends cc.Component {
 
         if (this.GameRunning == true) {
 
-            if (this.Right == true) {
+            /*if (this.Right == true) {
                 let LimitRight = (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * 0.3)
                 if (LimitRight) {
                     this.Player_Obj.x += this.Speed * dt;
@@ -194,7 +194,7 @@ export default class GameControl extends cc.Component {
                 if (LimitLeft) {
                     this.Player_Obj.x -= this.Speed * dt;
                 }
-            }
+            }*/
 
             if (this.SpawnBullect == true) {
                 this.CountTime += dt;
@@ -231,14 +231,14 @@ export default class GameControl extends cc.Component {
     private onKeyDown(event) {
 
         switch (event.keyCode) {
-            case cc.macro.KEY.right:
+            /*case cc.macro.KEY.right:
                 this.Right = true;
                 break;
 
             case cc.macro.KEY.left:
                 this.Left = true;
                 break;
-
+*/
             case cc.macro.KEY.space:
                 this.SpawnBullect = true;
                 break;
@@ -248,14 +248,14 @@ export default class GameControl extends cc.Component {
     private onKeyUp(event) {
 
         switch (event.keyCode) {
-            case cc.macro.KEY.right:
+           /* case cc.macro.KEY.right:
                 this.Right = false;
                 break;
 
             case cc.macro.KEY.left:
                 this.Left = false;
                 break;
-
+*/
             case cc.macro.KEY.space:
                 this.SpawnBullect = false;
                 break;
