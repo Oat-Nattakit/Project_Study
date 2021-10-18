@@ -175,7 +175,7 @@ export default class GameControl extends cc.Component {
         this.Start_Btn.node.active = false;
         this.Panel_Hiding.active = false;
         this.Spawn_PlayerHealth();
-        this.Sound_Setting.BMG_Sound.play();
+        this.Sound_Setting.BGM_Sound.play();
     }
 
 
@@ -423,7 +423,7 @@ export default class GameControl extends cc.Component {
     public GameOver() {
 
         this.GameRunning = false;
-        this.Sound_Setting.BMG_Sound.stop();
+        this.Sound_Setting.BGM_Sound.stop();
         this.GameOver_Node.active = true;
 
         let Get_GO_Text = this.GameOver_Node.children[0];

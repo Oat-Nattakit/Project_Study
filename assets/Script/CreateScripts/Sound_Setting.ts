@@ -13,18 +13,18 @@ const { ccclass, property } = cc._decorator;
 export default class Sound_Setting extends cc.Component {
 
     @property(cc.AudioSource)
-    public BMG_Sound: cc.AudioSource = null;
+    public BGM_Sound: cc.AudioSource = null;
 
     @property(cc.AudioSource)
     public SFX_Sound: cc.AudioSource = null;
 
     @property(cc.Button)
-    BMG_Button: cc.Button = null;
+    BGM_Button: cc.Button = null;
 
     @property(cc.Button)
     SFX_Button: cc.Button = null;
 
-    private Mute_BMG_ST: Boolean = false;
+    private Mute_BGM_ST: Boolean = false;
     private Mute_SFX_ST: Boolean = false;
 
     private GetDef: Default_Value_Setting = null;
@@ -35,11 +35,11 @@ export default class Sound_Setting extends cc.Component {
             this.GetDef = Default_Value_Setting.getInstance();
         }
 
-        this.BMG_Button.node.on('click', this.Mute_BMG, this);
+        this.BGM_Button.node.on('click', this.Mute_BGM, this);
         this.SFX_Button.node.on('click', this.Mute_SFX, this);
 
         if (this.GetDef.Def_BMG == true) {
-            this.Mute_BMG();
+            this.Mute_BGM();
         }
         if (this.GetDef.Def_SFX == true) {
 
@@ -47,21 +47,21 @@ export default class Sound_Setting extends cc.Component {
         }
     }
 
-    private Mute_BMG() {
+    private Mute_BGM() {
         
-        if (this.Mute_BMG_ST == false) {
+        if (this.Mute_BGM_ST == false) {
 
-            this.BMG_Sound.volume = 0;
-            this.BMG_Button.normalColor = cc.Color.RED;
-            this.Mute_BMG_ST = this.GetDef.Set_Sound_Def_BGM(true);
+            this.BGM_Sound.volume = 0;
+            this.BGM_Button.normalColor = cc.Color.RED;
+            this.Mute_BGM_ST = this.GetDef.Set_Sound_Def_BGM(true);
         }
         else {
 
-            this.BMG_Sound.volume = 0.1;
-            this.BMG_Button.normalColor = cc.Color.GREEN;
-            this.Mute_BMG_ST = this.GetDef.Set_Sound_Def_BGM(false);
+            this.BGM_Sound.volume = 0.1;
+            this.BGM_Button.normalColor = cc.Color.GREEN;
+            this.Mute_BGM_ST = this.GetDef.Set_Sound_Def_BGM(false);
         }
-        this.BMG_Button.hoverColor = this.BMG_Button.normalColor;        
+        this.BGM_Button.hoverColor = this.BGM_Button.normalColor;        
     }
 
     private Mute_SFX() {
