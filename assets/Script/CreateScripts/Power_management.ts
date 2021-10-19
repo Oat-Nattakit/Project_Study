@@ -39,7 +39,7 @@ interface Power_Pattern {
     RandomPower(): void;
 }
 
-enum Player_Buff {
+export enum Player_BUFF_Type {
 
     BUFF_Defult = -1,
     BUFF_PlusHealth = 0,
@@ -48,7 +48,7 @@ enum Player_Buff {
     BUFF_Speed = 3,
 }
 
-enum Player_DeBuff {
+export enum Player_DEBUFF_Type {
 
     DEBUFF_Defult = 0,
     DEBUFF_DoubleDamage = 1,
@@ -62,7 +62,7 @@ abstract class BUFF_Random implements Power_Pattern {
     Power_Number: number;
     Random_Rate: Int32List;
 
-    BUFF = Player_Buff;
+    BUFF = Player_BUFF_Type;
     private HP_Max: boolean = false;
     private Shild_Active: boolean = false;
 
@@ -163,7 +163,7 @@ export class DEBUFF_Manager implements Power_Pattern {
     Power_Number: number;
     Random_Rate: Int32List;
 
-    DEBUFF = Player_DeBuff;
+    DEBUFF = Player_DEBUFF_Type;
     SpritePic: cc.Node;
     Patical_System: cc.ParticleSystem;
 

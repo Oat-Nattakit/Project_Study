@@ -5,8 +5,8 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import GameControl from "./GameControl";
-import { DEBUFF_Manager, Power_management } from "./Power_management";
+import GameControl, { TageType } from "./GameControl";
+import { DEBUFF_Manager, Player_DEBUFF_Type, Power_management } from "./Power_management";
 
 const { ccclass, property } = cc._decorator;
 
@@ -25,7 +25,7 @@ export default class Bullet extends cc.Component {
     public typeEn: boolean = false;
 
     private GetMainScripts: GameControl;
-    private Power_Manage  : DEBUFF_Manager;
+    private Power_Manage: DEBUFF_Manager;
 
     private Damage = 1;
     private Enemy_DeBuff_Type = 0;
@@ -34,18 +34,18 @@ export default class Bullet extends cc.Component {
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
-        this.GetMainScripts = GameControl.Instance; 
-        this.Power_Manage = Power_management.instance().PlayerDEBUFF;         
+        this.GetMainScripts = GameControl.Instance;
+        this.Power_Manage = Power_management.instance().PlayerDEBUFF;
     }
 
     public EnemyBullet() {
 
-        this.ObjCol.tag = 3;
+        this.ObjCol.tag = TageType.Enemy;
         this.typeEn = true;
         this.node.group = 'Enemy';
-        
-        this.Power_Manage.SetNodeObject(this.SpritePic,this.Patical_System);
-        this.Enemy_DeBuff_Type = this.Power_Manage.RandomPower();        
+
+        this.Power_Manage.SetNodeObject(this.SpritePic, this.Patical_System);
+        this.Enemy_DeBuff_Type = this.Power_Manage.RandomPower();
     }
 
     start() {
@@ -65,35 +65,35 @@ export default class Bullet extends cc.Component {
             this.Bullet_Movement(Bullet_Enemy);
         }
     }
-    
+
     private En_Bullet_LockTarget() {
         let PlayerPos = this.GetMainScripts.Player_Obj;
         let diff = {
             'x': PlayerPos.x - this.node.x,
             'y': PlayerPos.y - this.node.y
         };
-        let angle = Math.atan2(diff.x, diff.y)*180/Math.PI;
-        this.node.runAction(cc.rotateTo(0,angle));        
+        let angle = Math.atan2(diff.x, diff.y) * 180 / Math.PI;
+        this.node.runAction(cc.rotateTo(0, angle));
     }
 
     private Bullet_Movement(Move_Action: cc.ActionInterval) {
 
         let Move_OutRange = cc.sequence(Move_Action, cc.destroySelf());
         this.node.runAction(Move_OutRange);
-    }    
+    }
 
     onCollisionEnter(other, self) {
-        
-        if (other.tag == 3) {
-            this.SpawnEFX();
-            this.node.destroy();
-        }
-        if (other.tag == 1) {
+
+        if (other.tag == TageType.Player) {
             this.HitPlayer();
             this.SpawnEFX();
             this.node.destroy();
         }
-        if (other.tag == 4) {
+        if (other.tag == TageType.Enemy) {
+            this.SpawnEFX();
+            this.node.destroy();
+        }
+        if (other.tag == TageType.Buff) {
             this.GetMainScripts.PowerManager.Player_Get_Buff();
             this.SpawnEFX();
             this.node.destroy();
@@ -115,7 +115,7 @@ export default class Bullet extends cc.Component {
 
         let Set_Debuff = this.GetMainScripts.PowerManager;
 
-        if (this.Enemy_DeBuff_Type == 1) {
+        if (this.Enemy_DeBuff_Type == Player_DEBUFF_Type.DEBUFF_DoubleDamage) {
             this.Damage = 2;
         }
         else {

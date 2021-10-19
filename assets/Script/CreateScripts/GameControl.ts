@@ -109,7 +109,7 @@ export default class GameControl extends cc.Component {
     private Rate_SpawnEnemy = 0.6;
 
     private CountFireEN = 0;
-   
+
     private CountTimePlay = 0;
 
     onLoad() {
@@ -126,10 +126,7 @@ export default class GameControl extends cc.Component {
         this.PowerManager = this.node.getComponent(PowerManager);
         this.Sound_Setting = this.node.getComponent(Sound_Setting);
 
-        /*cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);*/
-
-        this.GetPos_ = new Array();        
+        this.GetPos_ = new Array();
         this.GetCurrentPos_OnScene();
 
         this.Start_Btn.node.on('click', this.startGame, this);
@@ -143,9 +140,11 @@ export default class GameControl extends cc.Component {
             let PreSp = cc.instantiate(this.Enemy);
             PreSp.parent = this.Parent_Pos_Enemy;
         }
+
+        let WaitTime = 10;
         setTimeout(function () {
             GameControl.Instance.ColletPosition();
-        }, 10);
+        }, WaitTime);
     }
 
     ColletPosition() {
@@ -174,7 +173,7 @@ export default class GameControl extends cc.Component {
 
     update(dt) {
 
-        if (this.GameRunning == true) {            
+        if (this.GameRunning == true) {
 
             this.CountTime_SpEnemy += dt;
             let Case_EnemyMorethan_20 = (this.CountEnemy >= 20 && this.CountEnemy < this.MaxEnemy && this.CountTime_SpEnemy >= this.Rate_SpawnEnemy);
@@ -193,46 +192,12 @@ export default class GameControl extends cc.Component {
             }
 
             this.CountTimePlay += dt;
-            if (this.CountTimePlay >= 20 && this.Enamy_FireRate >= 0.2) {                
+            if (this.CountTimePlay >= 20 && this.Enamy_FireRate >= 0.2) {
                 this.Enamy_FireRate -= 0.1;
                 this.CountTimePlay = 0;
             }
         }
     }
-
-    /*private onKeyDown(event) {
-
-        switch (event.keyCode) {
-            case cc.macro.KEY.right:
-                this.Right = true;
-                break;
-
-            case cc.macro.KEY.left:
-                this.Left = true;
-                break;
-
-            case cc.macro.KEY.space:
-                this.SpawnBullect = true;
-                break;
-
-        }
-    }
-    private onKeyUp(event) {
-
-        switch (event.keyCode) {
-           case cc.macro.KEY.right:
-                this.Right = false;
-                break;
-
-            case cc.macro.KEY.left:
-                this.Left = false;
-                break;
-
-            /*case cc.macro.KEY.space:
-                this.SpawnBullect = false;
-                break;
-        }
-    }*/
 
     private Spawn_PlayerHealth() {
 
@@ -249,15 +214,6 @@ export default class GameControl extends cc.Component {
         NodeRunaction.runAction(ScaleUp);
     }
 
-    /*private Spawn_Bullect() {
-
-        let Bullect_ = cc.instantiate(this.Prefabs_Bullet);
-        this.Sound_Setting.SFX_Sound.play();
-        Bullect_.parent = this.Canvas_Node;
-        Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);
-    }*/
-
-
     public CallScore() {
 
         if (this.GameRunning == true) {
@@ -267,7 +223,11 @@ export default class GameControl extends cc.Component {
             this.Hit_and_GetHit_Ststus(true);
             this.Score_Text.string = "Score : " + this.scrorePlayer.toString()
 
-            let Hit_Bleeding = cc.sequence(cc.scaleTo(0.05, 0.7, 0.7), cc.scaleTo(0.05, 1, 1));
+            let Time_Action = 0.05;
+            let Down_Scale = 0.7;
+            let Default_Scale = 1;
+            let Hit_Bleeding = cc.sequence(cc.scaleTo(Time_Action, Down_Scale, Down_Scale), cc.scaleTo(Time_Action, Default_Scale, Default_Scale));
+
             this.ComboHit_Text.node.runAction(Hit_Bleeding);
         }
     }
@@ -278,7 +238,9 @@ export default class GameControl extends cc.Component {
             this.HitStack += 1;
             this.ComboHit_Text.node.active = true;
             this.ComboHit_Text.string = "HIT : " + this.HitStack.toString();
-            if (this.HitStack % 50 == 0 && this.Check_MaxHP() == false) {
+
+            let RoundStack_AddHP = 50;
+            if (this.HitStack % RoundStack_AddHP == 0 && this.Check_MaxHP() == false) {
                 this.PlayerPlusHealth();
                 this.ShowPlus_HP();
             }
@@ -331,9 +293,10 @@ export default class GameControl extends cc.Component {
         let AddHP = cc.instantiate(this.Plus_HP);
         AddHP.parent = this.Canvas_Node;
         AddHP.setPosition(0, 20);
-        let movetment = cc.sequence(cc.moveBy(0.5, 0, AddHP.y + 40), cc.destroySelf());
+        let Distance_Node = 40;
+        let movetment = cc.sequence(cc.moveBy(0.5, 0, AddHP.y + Distance_Node), cc.destroySelf());
         AddHP.runAction(movetment);
-    }    
+    }
 
     public PlayerPlusHealth() {
 
@@ -359,9 +322,11 @@ export default class GameControl extends cc.Component {
 
     public GetPosition_StandbyPush(PositionNode: cc.Vec2) {
 
+        let WaitTime = 10;
+
         setTimeout(function () {
             GameControl.Instance.EN_SpawnPos.push(PositionNode);
-        }, 10);
+        }, WaitTime);
     }
 
     private RanPositionEnemy() {
@@ -382,9 +347,10 @@ export default class GameControl extends cc.Component {
 
         this.CountEnemy++;
 
+        let WaitTime = 1
         setTimeout(function () {
             GameControl.Instance.SetEnemy_IN_Array();
-        }, 1);
+        }, WaitTime);
     }
 
     private SetEnemy_IN_Array() {
@@ -399,7 +365,14 @@ export default class GameControl extends cc.Component {
         this.GameOver_Node.active = true;
 
         let Get_GO_Text = this.GameOver_Node.children[0];
-        let Text_Scale = cc.sequence(cc.scaleTo(0.2, 0.95, 0.95), cc.scaleTo(0.2, 1, 1)).repeatForever();
+
+        let Time_Action = 0.2;
+        let Down_Scale = 0.95;
+        let Default_Scale = 1;
+
+        let Text_Scale = cc.sequence(cc.scaleTo(Time_Action, Down_Scale, Down_Scale),
+            cc.scaleTo(Time_Action, Default_Scale, Default_Scale)).repeatForever();
+
         Get_GO_Text.runAction(Text_Scale);
     }
 
@@ -408,8 +381,11 @@ export default class GameControl extends cc.Component {
     }
 }
 
-enum TageType{
-    Player = 0,
-    Bullet = 1,
-    Enemy = 2,
+export enum TageType {
+
+    Default = 0,
+    Player = 1,
+    Bullet = 2,
+    Enemy = 3,
+    Buff = 4,
 }

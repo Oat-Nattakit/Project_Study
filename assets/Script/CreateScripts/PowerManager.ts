@@ -7,7 +7,7 @@
 
 import { Default_Value_Setting } from "./Default_Value_Setting";
 import GameControl from "./GameControl";
-import { BUFF_Manager,Power_management } from "./Power_management";
+import { BUFF_Manager, Power_management } from "./Power_management";
 
 const { ccclass, property } = cc._decorator;
 
@@ -26,8 +26,8 @@ export default class PowerManager extends cc.Component {
     private GetMainScripts: GameControl;
     private DefValue: Default_Value_Setting = null;
 
-    private PowerMan : Power_management = Power_management.instance();
-    private BUFF: BUFF_Manager = null;    
+    private PowerMan: Power_management = Power_management.instance();
+    private BUFF: BUFF_Manager = null;
 
     private Buff_Obj: cc.Node;
 
@@ -35,7 +35,7 @@ export default class PowerManager extends cc.Component {
 
     private Speed_Count: cc.Label;
     private Fire_Count: cc.Label;
-    
+
     private GetTime = 0;
     private WaitTime_Sp = 0;
 
@@ -57,46 +57,51 @@ export default class PowerManager extends cc.Component {
             this.DefValue = Default_Value_Setting.getInstance();
         }
 
-        this.BUFF = this.PowerMan.PlayerBUFF;        
+        this.BUFF = this.PowerMan.PlayerBUFF;
 
         this.WaitTime_Sp = this.RandomTimeSpawnBuff();
 
         let RangeWidth = this.GetMainScripts.Canvas_Node.width * 0.5;
-        let RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;        
-        
-        this.BUFF.SetRange(RangeWidth,RangeHight);
+        let RangeHight = this.GetMainScripts.Canvas_Node.height * 0.1;
+
+        this.BUFF.SetRange(RangeWidth, RangeHight);
     }
 
     update(dt) {
 
         if (this.GetMainScripts.GameRunning == true) {
+            
+            this.BUFF_Status_Active(dt);            
+        }
+    }
 
-            if (this.Spawn_Buff == false) {
-                this.GetTime += dt;
-                if (this.GetTime >= this.WaitTime_Sp) {
-                    this.SpawnBuff();
+    private BUFF_Status_Active(dt) {
+
+        if (this.Spawn_Buff == false) {
+            this.GetTime += dt;
+            if (this.GetTime >= this.WaitTime_Sp) {
+                this.SpawnBuff();
+            }
+        }
+
+        else if (this.Spawn_Buff == true) {
+
+            let Buff_limitMove = this.GetMainScripts.Canvas_Node.width * 0.7;
+
+            if (this.Spawn_R_Side == true) {
+
+                this.Buff_Obj.x += dt * this.SpeedBuff;
+
+                if (this.Buff_Obj.x >= Buff_limitMove) {
+                    this.DestoryBuff_Object();
                 }
             }
+            else {
 
-            if (this.Spawn_Buff == true) {
+                this.Buff_Obj.x -= dt * this.SpeedBuff;
 
-                let Buff_limitMove = this.GetMainScripts.Canvas_Node.width * 0.7;
-
-                if (this.Spawn_R_Side == true) {
-
-                    this.Buff_Obj.x += dt * this.SpeedBuff;
-
-                    if (this.Buff_Obj.x >= Buff_limitMove) {
-                        this.DestoryBuff_Object();
-                    }
-                }
-                else {
-
-                    this.Buff_Obj.x -= dt * this.SpeedBuff;
-
-                    if (this.Buff_Obj.x <= -Buff_limitMove) {
-                        this.DestoryBuff_Object();
-                    }
+                if (this.Buff_Obj.x <= -Buff_limitMove) {
+                    this.DestoryBuff_Object();
                 }
             }
         }
@@ -110,14 +115,14 @@ export default class PowerManager extends cc.Component {
     private SpawnBuff() {
 
         let HP_Max = this.GetMainScripts.Check_MaxHP();
-        let Shild_Active = this.GetMainScripts.BuffShild;       
+        let Shild_Active = this.GetMainScripts.BuffShild;
 
         this.BUFF.CheckStatus_Buff_Active(HP_Max, Shild_Active);
-        this.Buff_Number = this.BUFF.RandomPower();       
+        this.Buff_Number = this.BUFF.RandomPower();
 
         this.Buff_Obj = cc.instantiate(this.BuffPrefabs);
         this.Buff_Obj.children[this.Buff_Number].active = true;
-        this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node;        
+        this.Buff_Obj.parent = this.GetMainScripts.Canvas_Node;
 
         this.BUFF.BuffObject_Movement(this.Buff_Obj);
 
