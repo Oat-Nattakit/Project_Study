@@ -14,7 +14,7 @@ export default class Player_Manager extends cc.Component {
 
     private Right: boolean;
     private Left: boolean;
-    private SpawnBullect : boolean;
+    private SpawnBullect: boolean;
 
     private LimitMove = 0;
     private CountTime = 0;
@@ -27,12 +27,12 @@ export default class Player_Manager extends cc.Component {
 
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
-        this.Player_Obj = this.node;        
+        this.Player_Obj = this.node;
     }
 
     start() {
-        this.GameControl = GameControl.Instance;  
-       this.LimitMove = this.GameControl.Canvas_Node.getComponent(cc.Canvas).designResolution.width;   
+        this.GameControl = GameControl.Instance;
+        this.LimitMove = this.GameControl.Canvas_Node.getComponent(cc.Canvas).designResolution.width;
     }
 
     update(dt) {
@@ -45,7 +45,6 @@ export default class Player_Manager extends cc.Component {
                 this.CountTime += dt;
                 if (this.CountTime >= this.GameControl.Fire_Rate) {
                     this.Spawn_Bullect();
-                    this.CountTime = 0;
                 }
             }
         }
@@ -54,14 +53,15 @@ export default class Player_Manager extends cc.Component {
 
     private Player_Movement(dt) {
 
+        let LimitSideScreen = 0.3;
         if (this.Right == true) {
-            let LimitRight = (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * 0.3)
+            let LimitRight = (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * LimitSideScreen)
             if (LimitRight) {
                 this.Player_Obj.x += this.GameControl.Speed * dt;
             }
         }
         else if (this.Left == true) {
-            let LimitLeft = (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width) * 0.3)
+            let LimitLeft = (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width) * LimitSideScreen)
             if (LimitLeft) {
                 this.Player_Obj.x -= this.GameControl.Speed * dt;
             }
@@ -74,6 +74,7 @@ export default class Player_Manager extends cc.Component {
         this.GameControl.Sound_Setting.SFX_Sound.play();
         Bullect_.parent = this.GameControl.Canvas_Node;
         Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);
+        this.CountTime = 0;
     }
 
     private onKeyDown(event) {

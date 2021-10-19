@@ -101,11 +101,6 @@ export default class GameControl extends cc.Component {
     public GameRunning: boolean;
     public BuffShild: boolean = false;
 
-    /*private Right: boolean;
-    private Left: boolean;*/
-    private SpawnBullect: boolean;
-
-    private CountTime = 0;
     private scrorePlayer = 0;
     private HitStack = 0;
 
@@ -114,8 +109,7 @@ export default class GameControl extends cc.Component {
     private Rate_SpawnEnemy = 0.6;
 
     private CountFireEN = 0;
-
-    //private LimitMove = 0;
+   
     private CountTimePlay = 0;
 
     onLoad() {
@@ -132,11 +126,10 @@ export default class GameControl extends cc.Component {
         this.PowerManager = this.node.getComponent(PowerManager);
         this.Sound_Setting = this.node.getComponent(Sound_Setting);
 
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+        /*cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);*/
 
-        this.GetPos_ = new Array();
-        //this.LimitMove = this.Canvas_Node.getComponent(cc.Canvas).designResolution.width;
+        this.GetPos_ = new Array();        
         this.GetCurrentPos_OnScene();
 
         this.Start_Btn.node.on('click', this.startGame, this);
@@ -181,28 +174,7 @@ export default class GameControl extends cc.Component {
 
     update(dt) {
 
-        if (this.GameRunning == true) {
-
-            /*if (this.Right == true) {
-                let LimitRight = (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * 0.3)
-                if (LimitRight) {
-                    this.Player_Obj.x += this.Speed * dt;
-                }
-            }
-            else if (this.Left == true) {
-                let LimitLeft = (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width) * 0.3)
-                if (LimitLeft) {
-                    this.Player_Obj.x -= this.Speed * dt;
-                }
-            }*/
-
-            /*if (this.SpawnBullect == true) {
-                this.CountTime += dt;
-                if (this.CountTime >= this.Fire_Rate) {
-                    this.Spawn_Bullect();
-                    this.CountTime = 0;
-                }
-            }*/
+        if (this.GameRunning == true) {            
 
             this.CountTime_SpEnemy += dt;
             let Case_EnemyMorethan_20 = (this.CountEnemy >= 20 && this.CountEnemy < this.MaxEnemy && this.CountTime_SpEnemy >= this.Rate_SpawnEnemy);
@@ -228,39 +200,39 @@ export default class GameControl extends cc.Component {
         }
     }
 
-    private onKeyDown(event) {
+    /*private onKeyDown(event) {
 
         switch (event.keyCode) {
-            /*case cc.macro.KEY.right:
+            case cc.macro.KEY.right:
                 this.Right = true;
                 break;
 
             case cc.macro.KEY.left:
                 this.Left = true;
                 break;
-*/
-            /*case cc.macro.KEY.space:
+
+            case cc.macro.KEY.space:
                 this.SpawnBullect = true;
-                break;*/
+                break;
 
         }
     }
     private onKeyUp(event) {
 
         switch (event.keyCode) {
-           /* case cc.macro.KEY.right:
+           case cc.macro.KEY.right:
                 this.Right = false;
                 break;
 
             case cc.macro.KEY.left:
                 this.Left = false;
                 break;
-*/
+
             /*case cc.macro.KEY.space:
                 this.SpawnBullect = false;
-                break;*/
+                break;
         }
-    }
+    }*/
 
     private Spawn_PlayerHealth() {
 
@@ -277,13 +249,13 @@ export default class GameControl extends cc.Component {
         NodeRunaction.runAction(ScaleUp);
     }
 
-    private Spawn_Bullect() {
+    /*private Spawn_Bullect() {
 
         let Bullect_ = cc.instantiate(this.Prefabs_Bullet);
         this.Sound_Setting.SFX_Sound.play();
         Bullect_.parent = this.Canvas_Node;
         Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);
-    }
+    }*/
 
 
     public CallScore() {
@@ -434,4 +406,10 @@ export default class GameControl extends cc.Component {
     public PlayGameAgain() {
         cc.director.loadScene("ObjMovement");
     }
+}
+
+enum TageType{
+    Player = 0,
+    Bullet = 1,
+    Enemy = 2,
 }

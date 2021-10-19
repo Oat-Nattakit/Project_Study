@@ -6,7 +6,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import GameControl from "./GameControl";
-import PowerManager, { DEBUFF_Manager } from "./PowerManager";
+import { DEBUFF_Manager, Power_management } from "./Power_management";
 
 const { ccclass, property } = cc._decorator;
 
@@ -20,12 +20,12 @@ export default class Bullet extends cc.Component {
     private SpritePic: cc.Node = null;
 
     @property(cc.ParticleSystem)
-    private Patical_Sy: cc.ParticleSystem = null;
+    private Patical_System: cc.ParticleSystem = null;
 
     public typeEn: boolean = false;
 
     private GetMainScripts: GameControl;
-    private Debuff: DEBUFF_Manager;
+    private Power_Manage  : DEBUFF_Manager;
 
     private Damage = 1;
     private Enemy_DeBuff_Type = 0;
@@ -34,8 +34,8 @@ export default class Bullet extends cc.Component {
         let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
-        this.GetMainScripts = GameControl.Instance;
-        this.Debuff = DEBUFF_Manager.Debuff_Inst();        
+        this.GetMainScripts = GameControl.Instance; 
+        this.Power_Manage = Power_management.instance().PlayerDEBUFF;         
     }
 
     public EnemyBullet() {
@@ -43,7 +43,9 @@ export default class Bullet extends cc.Component {
         this.ObjCol.tag = 3;
         this.typeEn = true;
         this.node.group = 'Enemy';
-        this.Enemy_DeBuff_Type = this.Debuff.Random_Buff_Bullet(this.Patical_Sy, this.SpritePic);
+        
+        this.Power_Manage.SetNodeObject(this.SpritePic,this.Patical_System);
+        this.Enemy_DeBuff_Type = this.Power_Manage.RandomPower();        
     }
 
     start() {
@@ -81,7 +83,7 @@ export default class Bullet extends cc.Component {
     }    
 
     onCollisionEnter(other, self) {
-
+        
         if (other.tag == 3) {
             this.SpawnEFX();
             this.node.destroy();
