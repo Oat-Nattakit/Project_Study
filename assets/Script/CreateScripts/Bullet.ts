@@ -31,8 +31,6 @@ export default class Bullet extends cc.Component {
     private Enemy_DeBuff_Type = 0;
 
     onLoad() {
-        let manager = cc.director.getCollisionManager();
-        manager.enabled = true;
 
         this.GetMainScripts = GameControl.Instance;
         this.Power_Manage = Power_management.instance().PlayerDEBUFF;

@@ -15,17 +15,15 @@ export default class EnemyControl extends cc.Component {
     private GetMainScripts: GameControl;
 
     onLoad() {
-
-        let manager = cc.director.getCollisionManager();
-        manager.enabled = true;
+        
         this.GetMainScripts = GameControl.Instance;
     }
 
     onCollisionEnter(other, self) {
 
-        if (other.tag == TageType.Bullet) {
-                        
-            this.GetMainScripts.GetPosition_StandbyPush(this.node.getPosition());
+        if (other.tag == TageType.Bullet) {                        
+            
+            this.GetMainScripts.SpawnEnemy.GetPosition_StandbyPush(this.node.getPosition());
             this.node.destroy();
             this.GetMainScripts.CallScore();
         }
