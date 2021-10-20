@@ -8,7 +8,7 @@
 //import { Default_Value_Setting } from "./Default_Value_Setting";
 import { Default_Value_Setting } from "./Default_Value_Setting";
 import EnemyControl from "./EnemyControl";
-import { CreateEnemy,Spawner_Enemy } from "./EnemyManage/Enemy_Spawner";
+import { CreateEnemy, Spawner_Enemy } from "./EnemyManage/Enemy_Spawner";
 import PowerManager from "./PowerManager";
 import Sound_Setting from "./Sound_Setting";
 
@@ -113,8 +113,8 @@ export default class GameControl extends cc.Component {
 
     private CountTimePlay = 0;
 
-    public SpawnEnemy : Spawner_Enemy;
-    private SetDataEnemy : CreateEnemy;
+    public SpawnEnemy: Spawner_Enemy;
+    private SetDataEnemy: CreateEnemy;
 
     onLoad() {
 
@@ -131,89 +131,60 @@ export default class GameControl extends cc.Component {
         }
 
         this.PowerManager = this.node.getComponent(PowerManager);
-        this.Sound_Setting = this.node.getComponent(Sound_Setting);
-
-        //this.GetPos_ = new Array();
-        //this.GetCurrentPos_OnScene();
+        this.Sound_Setting = this.node.getComponent(Sound_Setting);     
 
         this.Start_Btn.node.on('click', this.startGame, this);
         this.Play_Again_Btn.node.on('click', this.PlayGameAgain, this);
-        
-        this.SetDataEnemy = new CreateEnemy(this.Enemy,this.MinEnemy,this.MaxEnemy , this.Parent_Pos_Enemy );
-        this.SpawnEnemy = new Spawner_Enemy(this.SetDataEnemy);      
-        this.SpawnEnemy.Enemy_SetPosition();   
-        //this.SpawnEnemy.testUseTine();
-         
-      
-    }
 
-    /*private GetCurrentPos_OnScene() {
+        this.SetDataEnemy = new CreateEnemy(this.Enemy, this.MinEnemy, this.MaxEnemy, this.Parent_Pos_Enemy);
+        this.SpawnEnemy = new Spawner_Enemy(this.SetDataEnemy);
+        this.SpawnEnemy.Enemy_SetPosition();     
 
-        this.EN_SpawnPos = new Array();
-        for (let i = 0; i < this.MaxEnemy; i++) {
-            let PreSp = cc.instantiate(this.Enemy);
-            PreSp.parent = this.Parent_Pos_Enemy;
-        }
 
-        let WaitTime = 10;       
-        setTimeout(()=>{this.ColletPosition(),WaitTime});
-    }
-
-    private ColletPosition() {
-
-        for (let i = 0; i < this.Parent_Pos_Enemy.childrenCount; i++) {
-            this.EN_SpawnPos.push(this.Parent_Pos_Enemy.children[i].getPosition());
-        }
-
-        this.Parent_Pos_Enemy.destroyAllChildren();
-        this.Parent_Pos_Enemy.getComponent(cc.Layout).enabled = false;
-
-        for (let i = 0; i < this.MinEnemy; i++) {
-            this.RanPositionEnemy();
-        }
-    }*/
+    }    
 
     public startGame() {
 
-        this.GameRunning = true;        
+        this.GameRunning = true;
         this.Start_Btn.node.active = false;
-        this.Panel_Hiding.active = false;       
+        this.Panel_Hiding.active = false;
         this.Spawn_PlayerHealth();
-        this.Sound_Setting.BGM_Sound.play();   
-        this.SpawnEnemy.testUseTine();
-        
-    }
+        this.Sound_Setting.BGM_Sound.play();
+        this.SpawnEnemy.StartTime_Interval();
 
+    }
 
     update(dt) {
 
         if (this.GameRunning == true) {
-            
-            /*this.CountTime_SpEnemy += dt;                    
-            let Case_EnemyMorethan_20 = (this.SpawnEnemy.CountEnemy >= 20 && this.SpawnEnemy.CountEnemy < this.MaxEnemy && this.CountTime_SpEnemy >= this.Rate_SpawnEnemy);           
-            if (this.SpawnEnemy.CountEnemy < 20) {    
-                                                
-                this.CountTime_SpEnemy = 0;
-                this.SpawnEnemy.RanPositionEnemy();     
-            }
-            else if (Case_EnemyMorethan_20) { 
-                this.CountTime_SpEnemy = 0;               
-                this.SpawnEnemy.RanPositionEnemy();               
-            }*/
 
-            this.CountFireEN += dt;
-            if (this.CountFireEN >= this.Enamy_FireRate) {
-                let En_FirePos = Math.floor(Math.random() * this.Parent_Pos_Enemy.childrenCount);
-                this.Parent_Pos_Enemy.children[En_FirePos].getComponent(EnemyControl).En_Bullect();
-                this.CountFireEN = 0;
-            }
+            this.Control_EnemyFire(dt);
 
-            this.CountTimePlay += dt;
-            if (this.CountTimePlay >= 20 && this.Enamy_FireRate >= 0.2) {
-                this.Enamy_FireRate -= 0.1;
-                this.CountTimePlay = 0;
-            }
-        }        
+            this.Increed_EnemyFireRate(dt);            
+        }
+    }
+
+    private Control_EnemyFire(DeltaTime: number) {
+
+        this.CountFireEN += DeltaTime;
+        if (this.CountFireEN >= this.Enamy_FireRate) {
+            let En_FirePos = Math.floor(Math.random() * this.Parent_Pos_Enemy.childrenCount);
+            this.Parent_Pos_Enemy.children[En_FirePos].getComponent(EnemyControl).En_Bullect();
+            this.CountFireEN = 0;
+        }
+    }
+
+    private Increed_EnemyFireRate(DeltaTime: number) {
+
+        this.CountTimePlay += DeltaTime;
+
+        let MaxFireRate = 0.2;
+        let RoundTime_Increed = 20;
+
+        if (this.CountTimePlay >= RoundTime_Increed && this.Enamy_FireRate >= MaxFireRate) {
+            this.Enamy_FireRate -= 0.1;
+            this.CountTimePlay = 0;
+        }
     }
 
     private Spawn_PlayerHealth() {
@@ -232,12 +203,12 @@ export default class GameControl extends cc.Component {
     }
 
     public CallScore() {
-        
+
         if (this.GameRunning == true) {
             this.CountTime_SpEnemy = 0;
             this.scrorePlayer++;
             this.SpawnEnemy.CountEnemy--;
-            this.Hit_and_GetHit_Ststus(true);            
+            this.Hit_and_GetHit_Ststus(true);
             this.Score_Text.string = "Score : " + this.scrorePlayer.toString()
 
             let Time_Action = 0.05;
@@ -335,52 +306,14 @@ export default class GameControl extends cc.Component {
             Status = true;
         }
         return Status;
-    }
-
-    /*public GetPosition_StandbyPush(PositionNode: cc.Vec2) {
-
-        let WaitTime = 10;
-
-        setTimeout(function () {
-            GameControl.Instance.EN_SpawnPos.push(PositionNode);
-        }, WaitTime);
-    }*/
-
-    /*private RanPositionEnemy() {
-
-        let En_Pos = Math.floor(Math.random() * this.EN_SpawnPos.length);
-        this.Spawn_Enemy(this.EN_SpawnPos[En_Pos]);
-        this.EN_SpawnPos.splice(En_Pos, 1);
-        this.CountTime_SpEnemy = 0;
-    }*/
-
-    /*private Spawn_Enemy(PosSP: cc.Vec2) {
-
-        let Enemy_ = cc.instantiate(this.Enemy);
-        Enemy_.parent = this.Parent_Pos_Enemy;
-        Enemy_.setPosition(PosSP);
-        let EnemyScaleUp = cc.scaleTo(0.5, 1, 1);
-        Enemy_.runAction(EnemyScaleUp);
-
-        this.CountEnemy++;
-
-        let WaitTime = 1
-        setTimeout(function () {
-            GameControl.Instance.SetEnemy_IN_Array();
-        }, WaitTime);
-    }
-
-    private SetEnemy_IN_Array() {
-
-        this.GetPos_.push(this.Parent_Pos_Enemy.children[this.Parent_Pos_Enemy.childrenCount - 1].getPosition())
-    }*/
+    }   
 
     public GameOver() {
 
         this.GameRunning = false;
         this.Sound_Setting.BGM_Sound.stop();
         this.GameOver_Node.active = true;
-        this.SpawnEnemy.TestAgain();
+        this.SpawnEnemy.StopTime_Interval();
         let Get_GO_Text = this.GameOver_Node.children[0];
 
         let Time_Action = 0.2;

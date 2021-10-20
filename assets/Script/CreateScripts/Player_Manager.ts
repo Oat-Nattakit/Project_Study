@@ -44,36 +44,37 @@ export default class Player_Manager extends cc.Component {
             if (this.SpawnBullect == true) {
                 this.CountTime += dt;
                 if (this.CountTime >= this.GameControl.Fire_Rate) {
-                    this.Spawn_Bullect();
+                    this.PlayerSpawn_Bullect();
                 }
             }
         }
     }
 
-
-    private Player_Movement(dt) {
+    private Player_Movement(DeltaTime) {
 
         let LimitSideScreen = 0.3;
         if (this.Right == true) {
             let LimitRight = (this.Player_Obj.getPosition().x <= (this.LimitMove / 2) - (this.Player_Obj.width) * LimitSideScreen)
             if (LimitRight) {
-                this.Player_Obj.x += this.GameControl.Speed * dt;
+                this.Player_Obj.x += this.GameControl.Speed * DeltaTime;
             }
         }
         else if (this.Left == true) {
             let LimitLeft = (this.Player_Obj.getPosition().x >= -(this.LimitMove / 2) + (this.Player_Obj.width) * LimitSideScreen)
             if (LimitLeft) {
-                this.Player_Obj.x -= this.GameControl.Speed * dt;
+                this.Player_Obj.x -= this.GameControl.Speed * DeltaTime;
             }
         }
     }
 
-    private Spawn_Bullect() {
+    private PlayerSpawn_Bullect() {
 
         let Bullect_ = cc.instantiate(this.GameControl.Prefabs_Bullet);
         this.GameControl.Sound_Setting.SFX_Sound.play();
         Bullect_.parent = this.GameControl.Canvas_Node;
-        Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + 100);
+
+        let Distance_Y = 100;
+        Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + Distance_Y);
         this.CountTime = 0;
     }
 

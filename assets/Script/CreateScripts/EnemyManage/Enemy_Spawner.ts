@@ -47,6 +47,7 @@ export class Spawner_Enemy {
 
     constructor(Enemydata: CreateEnemy) {
         this.All_PositionEnemy = new Array();
+
         this.Current_PositionEnemy = new Array();
         this.CreateEnemy = Enemydata;
         this.CountEnemy = 0;
@@ -83,7 +84,6 @@ export class Spawner_Enemy {
         let En_Pos = Math.floor(Math.random() * this.All_PositionEnemy.length);
         this.Spawn_Enemy(this.All_PositionEnemy[En_Pos]);
         this.All_PositionEnemy.splice(En_Pos, 1);
-        //this.CreateEnemy.CountTime_SpEnemy = 0;        
     }
 
     private Spawn_Enemy(PosSP: cc.Vec2) {
@@ -110,7 +110,7 @@ export class Spawner_Enemy {
         this.Current_PositionEnemy.push(this.CreateEnemy.Enemy_region.children[this.CreateEnemy.Enemy_region.childrenCount - 1].getPosition());
     }
 
-    public testUseTine() {
+    public StartTime_Interval() {
 
         this.InterVal_Value = setInterval(() => this.SpawnTime(), 7);
 
@@ -119,14 +119,16 @@ export class Spawner_Enemy {
     private SpawnTime() {
 
         let DeltaTime = 0.007;
+        let RateSpawnTime = 0.6;
 
         this.CountTime += DeltaTime;
-        let Case_EnemyMorethan_20 = (this.CountEnemy >= 20 && this.CountEnemy < this.CreateEnemy.MaxEnemy && this.CountTime >= 0.6);
-        if (this.CountEnemy < 20) {
-            this.SpawnEnemyToGame();
+        let Case_EnemyMorethan_20 = (this.CountEnemy >= 20 && this.CountEnemy < this.CreateEnemy.MaxEnemy && this.CountTime >= RateSpawnTime);
+
+        if (this.CountEnemy < 20) {            
+            this.SpawnEnemyToGame();           
         }
         else if (Case_EnemyMorethan_20) {
-            this.SpawnEnemyToGame();
+            this.SpawnEnemyToGame();           
         }
     }
 
@@ -135,8 +137,8 @@ export class Spawner_Enemy {
         this.CountTime = 0;
         this.RanPositionEnemy();
     }
-    public TestAgain() {
-        clearInterval();
+    public StopTime_Interval() {
+        clearInterval(this.InterVal_Value);
     }
 
 
