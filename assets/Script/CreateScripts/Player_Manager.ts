@@ -42,10 +42,7 @@ export default class Player_Manager extends cc.Component {
             this.Player_Movement(dt);
 
             if (this.SpawnBullect == true) {
-                this.CountTime += dt;
-                if (this.CountTime >= this.GameControl.Fire_Rate) {
-                    this.PlayerSpawn_Bullect();
-                }
+                this.PlayerSpawn_Bullect(dt);                
             }
         }
     }
@@ -67,15 +64,20 @@ export default class Player_Manager extends cc.Component {
         }
     }
 
-    private PlayerSpawn_Bullect() {
+    private PlayerSpawn_Bullect(DeltaTime: number) {
 
-        let Bullect_ = cc.instantiate(this.GameControl.Prefabs_Bullet);
-        this.GameControl.Sound_Setting.SFX_Sound.play();
-        Bullect_.parent = this.GameControl.Canvas_Node;
+        this.CountTime += DeltaTime;
 
-        let Distance_Y = 100;
-        Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + Distance_Y);
-        this.CountTime = 0;
+        if (this.CountTime >= this.GameControl.Fire_Rate) {
+
+            let Bullect_ = cc.instantiate(this.GameControl.Prefabs_Bullet);
+            this.GameControl.Sound_Setting.SFX_Sound.play();
+            Bullect_.parent = this.GameControl.Canvas_Node;
+
+            let Distance_Y = 100;
+            Bullect_.setPosition(this.Player_Obj.x, this.Player_Obj.y + Distance_Y);
+            this.CountTime = 0;
+        }
     }
 
     private onKeyDown(event) {

@@ -5,38 +5,124 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import EnemyControl from "./EnemyControl";
+
+
+
 const { ccclass, property } = cc._decorator;
 
+@ccclass
+export default class Enemy_Manager extends cc.Component {
 
+    @property(cc.Prefab)
+    private PrefabsEnemy: cc.Prefab = null;
+
+    @property(cc.Node)
+    private Enemy_region: cc.Node = null;
+
+    @property
+    public MinEnemy: number = 20;
+    @property
+    public MaxEnemy: number = 30;
+    @property
+    public Enamy_FireRate: number = 1.5;
+
+    public SpawnEnemy: Spawner_Enemy;
+    private SetDataEnemy: CreateEnemy;
+
+    private CountFireEN : number = 0;
+    private CountTimePlay : number = 0;
+
+    private GameRuning : boolean = false;
+    
+    public StartEnemy_Spawner() {
+        this.SetDataEnemy = new CreateEnemy(this.PrefabsEnemy, this.MinEnemy, this.MaxEnemy, this.Enemy_region);
+        this.SpawnEnemy = new Spawner_Enemy(this.SetDataEnemy);
+        this.SpawnEnemy.Enemy_SetPosition();
+    }
+
+    public Start_Delta_Time(GameRuning: boolean) {
+
+        this.GameRuning = GameRuning;
+        if (GameRuning == true) {
+            this.SpawnEnemy.StartTime_Interval();
+        }
+        else {
+            this.SpawnEnemy.StopTime_Interval();
+        }
+    }
+
+    public Random_EnemyPosition() {
+        this.SpawnEnemy.Random_PositionEnemy();
+    }
+
+    public PushPositionEnemy(Position: cc.Vec2) {
+        this.SpawnEnemy.GetPosition_StandbyPush(Position);
+    }
+
+    public UpdateCurrentEnemy(Value : number){
+
+        this.SpawnEnemy.CountEnemy += Value;
+    }
+
+    update(DeltaTime){
+
+        if(this.GameRuning == true){
+
+            this.Control_EnemyFire(DeltaTime);
+            this.Increed_EnemyFireRate(DeltaTime);
+        }
+        
+    }
+    private Control_EnemyFire(DeltaTime: number) {
+
+        this.CountFireEN += DeltaTime;
+        if (this.CountFireEN >= this.Enamy_FireRate) {
+            let En_FirePos = Math.floor(Math.random() * this.Enemy_region.childrenCount);
+            this.Enemy_region.children[En_FirePos].getComponent(EnemyControl).En_Bullect();
+            this.CountFireEN = 0;
+        }
+    }
+
+    private Increed_EnemyFireRate(DeltaTime: number) {
+
+        this.CountTimePlay += DeltaTime;
+
+        let MaxFireRate = 0.2;
+        let RoundTime_Increed = 20;
+
+        if (this.CountTimePlay >= RoundTime_Increed && this.Enamy_FireRate >= MaxFireRate) {            
+            this.Enamy_FireRate -= 0.1;
+            this.CountTimePlay = 0;
+        }
+    }
+}
 interface Enemy_Defeult_Data {
 
     PrefabsEnemy: cc.Prefab;
     MinEnemy: number;
     MaxEnemy: number;
     Enemy_region: cc.Node
-    //CountTime_SpEnemy: number;
 }
 
-export class CreateEnemy implements Enemy_Defeult_Data {
+class CreateEnemy implements Enemy_Defeult_Data {
 
     PrefabsEnemy: cc.Prefab;
     MinEnemy: number;
     MaxEnemy: number;
     Enemy_region: cc.Node
-    //CountTime_SpEnemy: number;
 
-    constructor(Prefabs: cc.Prefab, Min: number, Max: number, region: cc.Node/*, Time_Sp: number*/) {
+    constructor(Prefabs: cc.Prefab, Min: number, Max: number, region: cc.Node) {
 
         this.PrefabsEnemy = Prefabs;
         this.MinEnemy = Min;
         this.MaxEnemy = Max;
         this.Enemy_region = region;
-        //this.CountTime_SpEnemy = Time_Sp;
     }
 }
 
 
-export class Spawner_Enemy {
+class Spawner_Enemy {
 
     All_PositionEnemy: cc.Vec2[];
     Current_PositionEnemy: cc.Vec2[];
@@ -75,11 +161,11 @@ export class Spawner_Enemy {
         this.CreateEnemy.Enemy_region.getComponent(cc.Layout).enabled = false;
 
         for (let i = 0; i < this.CreateEnemy.MinEnemy; i++) {
-            this.RanPositionEnemy();
+            this.Random_PositionEnemy();
         }
     }
 
-    public RanPositionEnemy() {
+    public Random_PositionEnemy() {
 
         let En_Pos = Math.floor(Math.random() * this.All_PositionEnemy.length);
         this.Spawn_Enemy(this.All_PositionEnemy[En_Pos]);
@@ -112,7 +198,8 @@ export class Spawner_Enemy {
 
     public StartTime_Interval() {
 
-        this.InterVal_Value = setInterval(() => this.SpawnTime(), 7);
+        let DeltaTime = 7;
+        this.InterVal_Value = setInterval(() => this.SpawnTime(), DeltaTime);
 
     }
 
@@ -124,20 +211,21 @@ export class Spawner_Enemy {
         this.CountTime += DeltaTime;
         let Case_EnemyMorethan_20 = (this.CountEnemy >= 20 && this.CountEnemy < this.CreateEnemy.MaxEnemy && this.CountTime >= RateSpawnTime);
 
-        if (this.CountEnemy < 20) {            
-            this.SpawnEnemyToGame();           
+        if (this.CountEnemy < 20) {
+            this.SpawnEnemyToGame();
         }
         else if (Case_EnemyMorethan_20) {
-            this.SpawnEnemyToGame();           
+            this.SpawnEnemyToGame();
         }
     }
 
     private SpawnEnemyToGame() {
 
         this.CountTime = 0;
-        this.RanPositionEnemy();
+        this.Random_PositionEnemy();
     }
     public StopTime_Interval() {
+
         clearInterval(this.InterVal_Value);
     }
 

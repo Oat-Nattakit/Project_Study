@@ -5,8 +5,8 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import { Default_Value_Setting } from "./Default_Value_Setting";
-import GameControl from "./GameControl";
+import { Default_Value_Setting } from "../Default_Value_Setting";
+import GameControl from "../GameControl";
 import { BUFF_Manager, Power_management } from "./Power_management";
 
 const { ccclass, property } = cc._decorator;

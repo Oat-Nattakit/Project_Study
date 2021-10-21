@@ -5,14 +5,16 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import Bullet from "./Bullet";
-import GameControl, { TageType } from "./GameControl";
+import Bullet from "../Bullet";
+import GameControl, { TageType } from "../GameControl";
+
+
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class EnemyControl extends cc.Component {
 
-    private GetMainScripts: GameControl;
+    private GetMainScripts: GameControl; 
 
     onLoad() {
         
@@ -21,9 +23,9 @@ export default class EnemyControl extends cc.Component {
 
     onCollisionEnter(other, self) {
 
-        if (other.tag == TageType.Bullet) {                        
-            
-            this.GetMainScripts.SpawnEnemy.GetPosition_StandbyPush(this.node.getPosition());
+        if (other.tag == TageType.Bullet) {                                    
+           
+            this.GetMainScripts.SpawnEnemy.PushPositionEnemy(this.node.getPosition());
             this.node.destroy();
             this.GetMainScripts.CallScore();
         }

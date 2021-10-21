@@ -7,9 +7,9 @@
 
 //import { Default_Value_Setting } from "./Default_Value_Setting";
 import { Default_Value_Setting } from "./Default_Value_Setting";
-import EnemyControl from "./EnemyControl";
-import { CreateEnemy, Spawner_Enemy } from "./EnemyManage/Enemy_Spawner";
-import PowerManager from "./PowerManager";
+import Enemy_Manager from "./EnemyManage/Enemy_Manager";
+import PowerManager from "./PowerManager/PowerManager";
+
 import Sound_Setting from "./Sound_Setting";
 
 const { ccclass, property } = cc._decorator;
@@ -35,9 +35,6 @@ export default class GameControl extends cc.Component {
     private GameOver_Node: cc.Node = null;
 
     @property(cc.Node)
-    private Parent_Pos_Enemy: cc.Node = null;
-
-    @property(cc.Node)
     public Player_Obj: cc.Node = null;
 
     @property(cc.Node)
@@ -56,9 +53,6 @@ export default class GameControl extends cc.Component {
     public Prefabs_Bullet: cc.Prefab = null;
 
     @property(cc.Prefab)
-    public Enemy: cc.Prefab = null;
-
-    @property(cc.Prefab)
     public Boom_EFX: cc.Prefab = null;
 
     @property(cc.Prefab)
@@ -73,6 +67,7 @@ export default class GameControl extends cc.Component {
     public PowerManager: PowerManager;
     public DefVal: Default_Value_Setting = null;
     public Sound_Setting: Sound_Setting;
+    public SpawnEnemy : Enemy_Manager;
 
     @property
     public Speed = 0;
@@ -81,40 +76,18 @@ export default class GameControl extends cc.Component {
     public Fire_Rate = 1;
 
     @property
-    private Enamy_FireRate = 1.5;
-
-    @property
     private PlayerHealth = 3;
 
     @property
-    private PlayerMaxHealth = 5;
-
-    @property
-    private MinEnemy = 20;
-
-    @property
-    private MaxEnemy = 30;
+    private PlayerMaxHealth = 5;   
 
     public Health_Pic: cc.Node[];
-    //public GetPos_: cc.Vec2[];
-    public EN_SpawnPos: cc.Vec2[];
 
     public GameRunning: boolean;
     public BuffShild: boolean = false;
 
     private scrorePlayer = 0;
     private HitStack = 0;
-
-    //private CountEnemy = 0;
-    private CountTime_SpEnemy = 0;
-    private Rate_SpawnEnemy = 0.6;
-
-    private CountFireEN = 0;
-
-    private CountTimePlay = 0;
-
-    public SpawnEnemy: Spawner_Enemy;
-    private SetDataEnemy: CreateEnemy;
 
     onLoad() {
 
@@ -136,11 +109,8 @@ export default class GameControl extends cc.Component {
         this.Start_Btn.node.on('click', this.startGame, this);
         this.Play_Again_Btn.node.on('click', this.PlayGameAgain, this);
 
-        this.SetDataEnemy = new CreateEnemy(this.Enemy, this.MinEnemy, this.MaxEnemy, this.Parent_Pos_Enemy);
-        this.SpawnEnemy = new Spawner_Enemy(this.SetDataEnemy);
-        this.SpawnEnemy.Enemy_SetPosition();     
-
-
+        this.SpawnEnemy = this.node.getComponent(Enemy_Manager);
+        this.SpawnEnemy.StartEnemy_Spawner();
     }    
 
     public startGame() {
@@ -149,47 +119,14 @@ export default class GameControl extends cc.Component {
         this.Start_Btn.node.active = false;
         this.Panel_Hiding.active = false;
         this.Spawn_PlayerHealth();
-        this.Sound_Setting.BGM_Sound.play();
-        this.SpawnEnemy.StartTime_Interval();
+        this.Sound_Setting.BGM_Sound.play();    
+        this.SpawnEnemy.Start_Delta_Time(this.GameRunning);
 
-    }
-
-    update(dt) {
-
-        if (this.GameRunning == true) {
-
-            this.Control_EnemyFire(dt);
-
-            this.Increed_EnemyFireRate(dt);            
-        }
-    }
-
-    private Control_EnemyFire(DeltaTime: number) {
-
-        this.CountFireEN += DeltaTime;
-        if (this.CountFireEN >= this.Enamy_FireRate) {
-            let En_FirePos = Math.floor(Math.random() * this.Parent_Pos_Enemy.childrenCount);
-            this.Parent_Pos_Enemy.children[En_FirePos].getComponent(EnemyControl).En_Bullect();
-            this.CountFireEN = 0;
-        }
-    }
-
-    private Increed_EnemyFireRate(DeltaTime: number) {
-
-        this.CountTimePlay += DeltaTime;
-
-        let MaxFireRate = 0.2;
-        let RoundTime_Increed = 20;
-
-        if (this.CountTimePlay >= RoundTime_Increed && this.Enamy_FireRate >= MaxFireRate) {
-            this.Enamy_FireRate -= 0.1;
-            this.CountTimePlay = 0;
-        }
-    }
+    }    
 
     private Spawn_PlayerHealth() {
 
-        this.Health_Pic = new Array();
+        this.Health_Pic = new Array();        
         for (let i = 0; i < this.PlayerHealth; i++) {
             let H_P = cc.instantiate(this.Health_Prefabs)
             H_P.parent = this.Pos_Health;
@@ -204,10 +141,9 @@ export default class GameControl extends cc.Component {
 
     public CallScore() {
 
-        if (this.GameRunning == true) {
-            this.CountTime_SpEnemy = 0;
-            this.scrorePlayer++;
-            this.SpawnEnemy.CountEnemy--;
+        if (this.GameRunning == true) {           
+            this.scrorePlayer++;            
+            this.SpawnEnemy.UpdateCurrentEnemy(-1);
             this.Hit_and_GetHit_Ststus(true);
             this.Score_Text.string = "Score : " + this.scrorePlayer.toString()
 
@@ -313,7 +249,7 @@ export default class GameControl extends cc.Component {
         this.GameRunning = false;
         this.Sound_Setting.BGM_Sound.stop();
         this.GameOver_Node.active = true;
-        this.SpawnEnemy.StopTime_Interval();
+        this.SpawnEnemy.Start_Delta_Time(this.GameRunning);
         let Get_GO_Text = this.GameOver_Node.children[0];
 
         let Time_Action = 0.2;

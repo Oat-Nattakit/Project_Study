@@ -6,7 +6,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import GameControl, { TageType } from "./GameControl";
-import { DEBUFF_Manager, Player_DEBUFF_Type, Power_management } from "./Power_management";
+import { DEBUFF_Manager, Player_DEBUFF_Type, Power_management } from "./PowerManager/Power_management";
 
 const { ccclass, property } = cc._decorator;
 
@@ -81,28 +81,26 @@ export default class Bullet extends cc.Component {
     }
 
     onCollisionEnter(other, self) {
-
+        
+        if (other.tag == TageType.Enemy) {}
+           
         if (other.tag == TageType.Player) {
             this.HitPlayer();
-            this.SpawnEFX();
-            this.node.destroy();
-        }
-        if (other.tag == TageType.Enemy) {
-            this.SpawnEFX();
-            this.node.destroy();
         }
         if (other.tag == TageType.Buff) {
-            this.GetMainScripts.PowerManager.Player_Get_Buff();
-            this.SpawnEFX();
-            this.node.destroy();
+            this.GetMainScripts.PowerManager.Player_Get_Buff();            
         }
+        
+        this.SpawnEFX();
+        this.node.destroy();
     }
 
     private HitPlayer() {
 
+        let TimeAction = 0.1;
         cc.tween(this.GetMainScripts.Player_Obj)
-            .to(0.1, { color: cc.Color.RED })
-            .to(0.1, { color: cc.Color.WHITE })
+            .to(TimeAction, { color: cc.Color.RED })
+            .to(TimeAction, { color: cc.Color.WHITE })
             .start();
 
         this.Set_Debuff();

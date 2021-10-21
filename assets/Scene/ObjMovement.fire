@@ -3270,6 +3270,9 @@
       },
       {
         "__id__": 76
+      },
+      {
+        "__id__": 77
       }
     ],
     "_prefab": null,
@@ -3389,6 +3392,24 @@
     "_id": "f29hUh8c9MepLOt3EJQ1Uw"
   },
   {
+    "__type__": "47718JArr1BY6gMgFBeDG9B",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 72
+    },
+    "_enabled": true,
+    "PrefabsEnemy": {
+      "__uuid__": "0e95893b-e071-451f-8dd0-c437eaf1ba56"
+    },
+    "Enemy_region": {
+      "__id__": 5
+    },
+    "MinEnemy": 20,
+    "MaxEnemy": 30,
+    "_id": "6bQi+iYcRBxJchPrIb1SWZ"
+  },
+  {
     "__type__": "ecc57tZXFdN+rBOgExmBbqD",
     "_name": "",
     "_objFlags": 0,
@@ -3416,7 +3437,7 @@
     },
     "_enabled": true,
     "BGM_Sound": {
-      "__id__": 76
+      "__id__": 77
     },
     "SFX_Sound": {
       "__id__": 19
