@@ -20,13 +20,18 @@ export default class EnemyControl extends cc.Component {
         
         this.GetMainScripts = GameControl.Instance;
     }
+    public StartEnemy(){
+        
+        this.node.setScale(0);
+        let EnemyScaleUp = cc.scaleTo(0.5, 1, 1);        
+        this.node.runAction(EnemyScaleUp);
+    }
 
     onCollisionEnter(other, self) {
 
-        if (other.tag == TageType.Bullet) {                                    
+        if (other.tag == TageType.Bullet) {           
            
-            this.GetMainScripts.SpawnEnemy.PushPositionEnemy(this.node.getPosition());
-            this.node.destroy();
+            this.GetMainScripts.SpawnEnemy.PushPositionEnemy(this.node);            
             this.GetMainScripts.CallScore();
         }
     }

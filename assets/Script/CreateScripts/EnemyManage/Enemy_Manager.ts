@@ -30,11 +30,11 @@ export default class Enemy_Manager extends cc.Component {
     public SpawnEnemy: Spawner_Enemy;
     private SetDataEnemy: CreateEnemy;
 
-    private CountFireEN : number = 0;
-    private CountTimePlay : number = 0;
+    private CountFireEN: number = 0;
+    private CountTimePlay: number = 0;
 
-    private GameRuning : boolean = false;
-    
+    private GameRuning: boolean = false;
+
     public StartEnemy_Spawner() {
         this.SetDataEnemy = new CreateEnemy(this.PrefabsEnemy, this.MinEnemy, this.MaxEnemy, this.Enemy_region);
         this.SpawnEnemy = new Spawner_Enemy(this.SetDataEnemy);
@@ -56,23 +56,24 @@ export default class Enemy_Manager extends cc.Component {
         this.SpawnEnemy.Random_PositionEnemy();
     }
 
-    public PushPositionEnemy(Position: cc.Vec2) {
-        this.SpawnEnemy.GetPosition_StandbyPush(Position);
+    public PushPositionEnemy(Enemy: cc.Node) {
+        this.SpawnEnemy.DestoryEnemy(Enemy);
+        this.SpawnEnemy.GetPosition_StandbyPush(Enemy.getPosition());
     }
 
-    public UpdateCurrentEnemy(Value : number){
+    public UpdateCurrentEnemy(Value: number) {
 
         this.SpawnEnemy.CountEnemy += Value;
     }
 
-    update(DeltaTime){
+    update(DeltaTime) {
 
-        if(this.GameRuning == true){
+        if (this.GameRuning == true) {
 
             this.Control_EnemyFire(DeltaTime);
             this.Increed_EnemyFireRate(DeltaTime);
         }
-        
+
     }
     private Control_EnemyFire(DeltaTime: number) {
 
@@ -91,7 +92,7 @@ export default class Enemy_Manager extends cc.Component {
         let MaxFireRate = 0.2;
         let RoundTime_Increed = 20;
 
-        if (this.CountTimePlay >= RoundTime_Increed && this.Enamy_FireRate >= MaxFireRate) {            
+        if (this.CountTimePlay >= RoundTime_Increed && this.Enamy_FireRate >= MaxFireRate) {
             this.Enamy_FireRate -= 0.1;
             this.CountTimePlay = 0;
         }
@@ -130,6 +131,7 @@ class Spawner_Enemy {
     CreateEnemy: CreateEnemy;
     InterVal_Value: number;
     CountTime: number;
+    PoolNode: cc.NodePool;
 
     constructor(Enemydata: CreateEnemy) {
         this.All_PositionEnemy = new Array();
@@ -138,14 +140,17 @@ class Spawner_Enemy {
         this.CreateEnemy = Enemydata;
         this.CountEnemy = 0;
         this.CountTime = 0;
+        this.PoolNode = new cc.NodePool();
     }
+
 
     public Enemy_SetPosition() {
 
         for (let i = 0; i < this.CreateEnemy.MaxEnemy; i++) {
             let PreSp = cc.instantiate(this.CreateEnemy.PrefabsEnemy);
-            PreSp.parent = this.CreateEnemy.Enemy_region;
+            PreSp.parent = this.CreateEnemy.Enemy_region;            
         }
+
 
         let WaitTime = 10;
         setTimeout(() => { this.ColletPosition(), WaitTime });
@@ -157,7 +162,10 @@ class Spawner_Enemy {
             this.All_PositionEnemy.push(this.CreateEnemy.Enemy_region.children[i].getPosition());
         }
 
-        this.CreateEnemy.Enemy_region.destroyAllChildren();
+        for (let i = this.CreateEnemy.MaxEnemy; i >= 0; i--) {
+            this.PoolNode.put(this.CreateEnemy.Enemy_region.children[i]);
+        }        
+        
         this.CreateEnemy.Enemy_region.getComponent(cc.Layout).enabled = false;
 
         for (let i = 0; i < this.CreateEnemy.MinEnemy; i++) {
@@ -173,17 +181,30 @@ class Spawner_Enemy {
     }
 
     private Spawn_Enemy(PosSP: cc.Vec2) {
-
-        let Enemy_ = cc.instantiate(this.CreateEnemy.PrefabsEnemy);
+        
+        let Enemy_: cc.Node = null;
+        if (this.PoolNode.size() > 0) {
+            Enemy_ = this.PoolNode.get();
+        }
+        else {
+            Enemy_ = cc.instantiate(this.CreateEnemy.PrefabsEnemy);
+            this.PoolNode.put(Enemy_);            
+        }
+        
         Enemy_.parent = this.CreateEnemy.Enemy_region;
         Enemy_.setPosition(PosSP);
-        let EnemyScaleUp = cc.scaleTo(0.5, 1, 1);
-        Enemy_.runAction(EnemyScaleUp);
+        Enemy_.getComponent(EnemyControl).StartEnemy();
+        
         this.CountEnemy++;
 
         let WaitTime = 1
         setTimeout(() => { this.SetEnemy_IN_Array(), WaitTime });
     }
+
+    public DestoryEnemy(Enemy: cc.Node) {
+        this.PoolNode.put(Enemy);
+    }
+
 
     public GetPosition_StandbyPush(PositionNode: cc.Vec2) {
 

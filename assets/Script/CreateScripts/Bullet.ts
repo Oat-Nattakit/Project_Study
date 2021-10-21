@@ -85,10 +85,10 @@ export default class Bullet extends cc.Component {
         if (other.tag == TageType.Enemy) {}
            
         if (other.tag == TageType.Player) {
-            this.HitPlayer();
+            this.HitPlayer();            
         }
         if (other.tag == TageType.Buff) {
-            this.GetMainScripts.PowerManager.Player_Get_Buff();            
+            this.GetMainScripts.PowerManager.Player_Get_Buff();                     
         }
         
         this.SpawnEFX();

@@ -67,7 +67,7 @@ export default class GameControl extends cc.Component {
     public PowerManager: PowerManager;
     public DefVal: Default_Value_Setting = null;
     public Sound_Setting: Sound_Setting;
-    public SpawnEnemy : Enemy_Manager;
+    public SpawnEnemy: Enemy_Manager;
 
     @property
     public Speed = 0;
@@ -79,7 +79,7 @@ export default class GameControl extends cc.Component {
     private PlayerHealth = 3;
 
     @property
-    private PlayerMaxHealth = 5;   
+    private PlayerMaxHealth = 5;
 
     public Health_Pic: cc.Node[];
 
@@ -104,14 +104,14 @@ export default class GameControl extends cc.Component {
         }
 
         this.PowerManager = this.node.getComponent(PowerManager);
-        this.Sound_Setting = this.node.getComponent(Sound_Setting);     
+        this.Sound_Setting = this.node.getComponent(Sound_Setting);
 
         this.Start_Btn.node.on('click', this.startGame, this);
         this.Play_Again_Btn.node.on('click', this.PlayGameAgain, this);
 
         this.SpawnEnemy = this.node.getComponent(Enemy_Manager);
         this.SpawnEnemy.StartEnemy_Spawner();
-    }    
+    }
 
     public startGame() {
 
@@ -119,14 +119,14 @@ export default class GameControl extends cc.Component {
         this.Start_Btn.node.active = false;
         this.Panel_Hiding.active = false;
         this.Spawn_PlayerHealth();
-        this.Sound_Setting.BGM_Sound.play();    
+        this.Sound_Setting.BGM_Sound.play();
         this.SpawnEnemy.Start_Delta_Time(this.GameRunning);
 
-    }    
+    }
 
     private Spawn_PlayerHealth() {
 
-        this.Health_Pic = new Array();        
+        this.Health_Pic = new Array();
         for (let i = 0; i < this.PlayerHealth; i++) {
             let H_P = cc.instantiate(this.Health_Prefabs)
             H_P.parent = this.Pos_Health;
@@ -138,11 +138,11 @@ export default class GameControl extends cc.Component {
         let ScaleUp = cc.scaleTo(0.2, 1)
         NodeRunaction.runAction(ScaleUp);
     }
-
+     
     public CallScore() {
 
-        if (this.GameRunning == true) {           
-            this.scrorePlayer++;            
+        if (this.GameRunning == true) {
+            this.scrorePlayer++;
             this.SpawnEnemy.UpdateCurrentEnemy(-1);
             this.Hit_and_GetHit_Ststus(true);
             this.Score_Text.string = "Score : " + this.scrorePlayer.toString()
@@ -242,7 +242,7 @@ export default class GameControl extends cc.Component {
             Status = true;
         }
         return Status;
-    }   
+    }
 
     public GameOver() {
 

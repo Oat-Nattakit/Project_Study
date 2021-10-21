@@ -3346,9 +3346,6 @@
     "GameOver_Node": {
       "__id__": 27
     },
-    "Parent_Pos_Enemy": {
-      "__id__": 5
-    },
     "Player_Obj": {
       "__id__": 14
     },
@@ -3367,9 +3364,6 @@
     "Prefabs_Bullet": {
       "__uuid__": "273ad28f-3eb3-4a3a-bd1b-7bc86dfce8f2"
     },
-    "Enemy": {
-      "__uuid__": "0e95893b-e071-451f-8dd0-c437eaf1ba56"
-    },
     "Boom_EFX": {
       "__uuid__": "1469f682-a3aa-4b3b-ac3b-f54bb45d45bc"
     },
@@ -3384,11 +3378,8 @@
     },
     "Speed": 500,
     "Fire_Rate": 0.5,
-    "Enamy_FireRate": 1.5,
     "PlayerHealth": 3,
     "PlayerMaxHealth": 5,
-    "MinEnemy": 20,
-    "MaxEnemy": 30,
     "_id": "f29hUh8c9MepLOt3EJQ1Uw"
   },
   {
@@ -3407,6 +3398,7 @@
     },
     "MinEnemy": 20,
     "MaxEnemy": 30,
+    "Enamy_FireRate": 1.5,
     "_id": "6bQi+iYcRBxJchPrIb1SWZ"
   },
   {
