@@ -23,6 +23,9 @@ export default class PowerManager extends cc.Component {
     @property(cc.Prefab)
     private Buff_Picture: cc.Prefab = null;
 
+    @property(cc.Node)
+    private Position_ShowBuff : cc.Node = null;
+
     private GetMainScripts: GameControl;
     private DefValue: Default_Value_Setting = null;
 
@@ -259,7 +262,7 @@ export default class PowerManager extends cc.Component {
 
         let Buff_Pic = cc.instantiate(this.Buff_Picture);
         Buff_Pic.children[BuffNuber].active = true;
-        Buff_Pic.parent = this.GetMainScripts.Pos_ShowBuff;
+        Buff_Pic.parent = this.Position_ShowBuff;
         Buff_Pic.scale = 0.5;
 
         return Buff_Pic.children[BuffNuber];

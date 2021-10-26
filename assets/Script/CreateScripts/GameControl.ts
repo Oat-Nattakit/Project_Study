@@ -46,9 +46,6 @@ export default class GameControl extends cc.Component {
     @property(cc.Node)
     public Pos_Health: cc.Node = null;
 
-    @property(cc.Node)
-    public Pos_ShowBuff: cc.Node = null;
-
     @property(cc.Prefab)
     public Prefabs_Bullet: cc.Prefab = null;
 
