@@ -3266,13 +3266,13 @@
         "__id__": 74
       },
       {
-        "__id__": 75
-      },
-      {
         "__id__": 76
       },
       {
         "__id__": 77
+      },
+      {
+        "__id__": 75
       }
     ],
     "_prefab": null,
@@ -3357,9 +3357,6 @@
     },
     "Pos_Health": {
       "__id__": 21
-    },
-    "Pos_ShowBuff": {
-      "__id__": 24
     },
     "Prefabs_Bullet": {
       "__uuid__": "273ad28f-3eb3-4a3a-bd1b-7bc86dfce8f2"
@@ -3458,6 +3455,9 @@
     },
     "Buff_Picture": {
       "__uuid__": "9ec82b37-825f-43af-a2fe-7c70141217bf"
+    },
+    "Position_ShowBuff": {
+      "__id__": 24
     },
     "_id": "9e0cHBGFZHWrnjFmzkHWf6"
   }
